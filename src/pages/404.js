@@ -43,6 +43,8 @@ const TreeIllustration = styled('img')(({ theme }) => ({
   }
 }))
 
+
+const user = "mof"; 
 const Error404 = () => {
   return (
     <Box className='content-center'>
