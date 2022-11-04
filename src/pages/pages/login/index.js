@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -38,6 +38,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import axios from 'axios'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -61,7 +62,8 @@ const LoginPage = () => {
   // ** State
   const [values, setValues] = useState({
     password: '',
-    showPassword: false
+    showPassword: false, 
+    email: ''
   })
 
   // ** Hook
@@ -70,6 +72,7 @@ const LoginPage = () => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+    console.log(values)
   }
 
   const handleClickShowPassword = () => {
@@ -78,6 +81,32 @@ const LoginPage = () => {
 
   const handleMouseDownPassword = event => {
     event.preventDefault()
+  }
+
+  const sendData = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/login`, {
+      password: values.password, 
+      email: values.email
+    }).then(response => {
+      console.log(response.data)
+      router.push('/account-settings'); 
+    }).catch(err => {
+      console.log(err); 
+    })
+  }
+  
+  
+  useEffect(() => {
+    getData(); 
+  }, [])
+
+  const getData = async () => {
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/hello-world`).then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error); 
+    })
   }
 
   return (
@@ -164,7 +193,7 @@ const LoginPage = () => {
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+            <TextField onChange={handleChange('email')} autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -200,7 +229,16 @@ const LoginPage = () => {
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-              onClick={() => router.push('/')}
+
+              // onClick={() => router.push('/')}
+              onClick = {
+                (e) => {
+                  e.preventDefault(); 
+                  sendData(); 
+
+                  // router.push('/account-settings')
+                }
+              }
             >
               Login
             </Button>

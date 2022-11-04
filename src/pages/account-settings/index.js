@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -22,6 +22,7 @@ import TabSecurity from 'src/views/account-settings/TabSecurity'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
+import axios from 'axios'
 
 const Tab = styled(MuiTab)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -48,6 +49,23 @@ const AccountSettings = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+
+  const [profile, setProfile] = useState({});
+
+
+  const getProfileById = async (id) => {
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles?id=${id}`).then(response => {
+      setProfile(response.data);
+      console.log(response.data);
+    }).catch(err => {
+      console.log(err);
+    })
+
+  }
+
+  useEffect(() => {
+    getProfileById(localStorage.getItem('profile_id'));
+  }, [])
 
   return (
     <Card>
@@ -87,7 +105,11 @@ const AccountSettings = () => {
         </TabList>
 
         <TabPanel sx={{ p: 0 }} value='account'>
-          <TabAccount />
+          <TabAccount 
+            username = {profile.username}
+            name = {profile.name}
+            email = {profile.email}
+          />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='security'>
           <TabSecurity />
