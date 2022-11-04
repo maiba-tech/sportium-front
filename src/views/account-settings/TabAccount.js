@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -20,6 +20,7 @@ import Button from '@mui/material/Button'
 
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
+import axios from 'axios'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -45,7 +46,7 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
   }
 }))
 
-const TabAccount = () => {
+const TabAccount = (props) => {
   // ** State
   const [openAlert, setOpenAlert] = useState(true)
   const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
@@ -58,6 +59,7 @@ const TabAccount = () => {
       reader.readAsDataURL(files[0])
     }
   }
+
 
   return (
     <CardContent>
@@ -88,10 +90,20 @@ const TabAccount = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
+            <TextField 
+              fullWidth 
+              label='Username' 
+              placeholder='johnDoe' 
+              defaultValue={props.username} 
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+            <TextField 
+              fullWidth 
+              label='Name' 
+              placeholder='John Doe' 
+              defaultValue={props.name}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -99,7 +111,7 @@ const TabAccount = () => {
               type='email'
               label='Email'
               placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              defaultValue={props.email}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
