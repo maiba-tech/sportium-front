@@ -37,6 +37,12 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import axios from "axios";
+import {useRouter} from "next/router";
+import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import Close from "mdi-material-ui/Close";
+import AlertTitle from "@mui/material/AlertTitle";
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -58,15 +64,21 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
+let openAlert;
+
 const RegisterPage = () => {
   // ** States
   const [values, setValues] = useState({
     password: '',
+    lastName: '',
+    firstName: '',
+    email: '',
     showPassword: false
   })
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
@@ -79,6 +91,41 @@ const RegisterPage = () => {
   const handleMouseDownPassword = event => {
     event.preventDefault()
   }
+
+  const validState=()=>{
+
+   if( values.email.trim()==="" ||
+       values.password.trim()==="" ||
+       values.lastName.trim()==="" ||
+       values.firstName.trim()==="")
+
+      return  false;
+
+  return true;
+
+  }
+
+  const sendData = async () => {
+    if(!validState()) {
+      alert("Please Enter Your information !");
+    }
+    else {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/create`, {
+        password: values.password,
+        email: values.email,
+        lastName: values.lastName,
+        firstName: values.firstName,
+
+      }).then(response => {
+        console.log(values.password + "  " + values.email + "  " + values.lastName + "  " + values.firstName);
+        router.push('/pages/login/');
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }
+
+
 
   return (
     <Box className='content-center'>
@@ -164,15 +211,18 @@ const RegisterPage = () => {
             <Typography variant='body2'>Make your app management easy and fun!</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='username' label='Username' sx={{ marginBottom: 4 }} />
-            <TextField fullWidth type='email' label='Email' sx={{ marginBottom: 4 }} />
+            <TextField type="email" autoFocus fullWidth id='email' label='email' sx={{ marginBottom: 4 }} value={values.email}  onChange={handleChange('email')} required={true}/>
+            <TextField autoFocus fullWidth id='lastName' label='lastName' sx={{ marginBottom: 4 }} value={values.lastName}  onChange={handleChange('lastName')} required={true}/>
+            <TextField autoFocus fullWidth id='firstName' label='firstName' sx={{ marginBottom: 4 }} value={values.firstName}  onChange={handleChange('firstName')} required={true}/>
+            <TextField fullWidth type='Password' label='Password' sx={{ marginBottom: 4 }} value={values.password}  onChange={handleChange('password')} required={true}/>
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
               <OutlinedInput
+
                 label='Password'
-                value={values.password}
+                value={values.password1}
                 id='auth-register-password'
-                onChange={handleChange('password')}
+                onChange={handleChange('password1')}
                 type={values.showPassword ? 'text' : 'password'}
                 endAdornment={
                   <InputAdornment position='end'>
@@ -186,6 +236,7 @@ const RegisterPage = () => {
                     </IconButton>
                   </InputAdornment>
                 }
+                required={true}
               />
             </FormControl>
             <FormControlLabel
@@ -199,9 +250,40 @@ const RegisterPage = () => {
                 </Fragment>
               }
             />
-            <Button fullWidth size='large' type='submit' variant='contained' sx={{ marginBottom: 7 }}>
+            <Button fullWidth size='large'
+                    type='submit'
+                    variant='contained'
+                    sx={{ marginBottom: 7 }}
+                    onClick = {
+                      (e) => {
+                        e.preventDefault();
+                        sendData();
+
+                        // router.push('/account-settings')
+                      }
+                    }
+            >
+
               Sign up
             </Button>
+            {openAlert ? (
+              <Grid item xs={12} sx={{ mb: 3 }}>
+                <Alert
+                  severity='warning'
+                  sx={{ '& a': { fontWeight: 400 } }}
+                  action={
+                    <IconButton size='small' color='inherit' aria-label='close' onClick={() => setOpenAlert(false)}>
+                      <Close fontSize='inherit' />
+                    </IconButton>
+                  }
+                >
+                  <AlertTitle>Please Enter All the information to get registered .</AlertTitle>
+                  <Link href='/' onClick={e => e.preventDefault()}>
+                    Resend Confirmation
+                  </Link>
+                </Alert>
+              </Grid>
+            ) : null}
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
                 Already have an account?

@@ -62,7 +62,7 @@ const LoginPage = () => {
   // ** State
   const [values, setValues] = useState({
     password: '',
-    showPassword: false, 
+    showPassword: false,
     email: ''
   })
 
@@ -85,19 +85,19 @@ const LoginPage = () => {
 
   const sendData = async () => {
     await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/login`, {
-      password: values.password, 
+      password: values.password,
       email: values.email
     }).then(response => {
       console.log(response.data)
-      router.push('/account-settings'); 
+      router.push('/account-settings');
     }).catch(err => {
-      console.log(err); 
+      console.log(err);
     })
   }
-  
-  
+
+
   useEffect(() => {
-    getData(); 
+    //getData();
   }, [])
 
   const getData = async () => {
@@ -105,7 +105,7 @@ const LoginPage = () => {
       console.log(response)
     })
     .catch(error => {
-      console.log(error); 
+      console.log(error);
     })
   }
 
@@ -233,8 +233,8 @@ const LoginPage = () => {
               // onClick={() => router.push('/')}
               onClick = {
                 (e) => {
-                  e.preventDefault(); 
-                  sendData(); 
+                  e.preventDefault();
+                  sendData();
 
                   // router.push('/account-settings')
                 }

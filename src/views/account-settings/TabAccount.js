@@ -90,18 +90,18 @@ const TabAccount = (props) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Username' 
-              placeholder='johnDoe' 
-              defaultValue={props.username} 
+            <TextField
+              fullWidth
+              label='Username'
+              placeholder='johnDoe'
+              defaultValue={props.username}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Name' 
-              placeholder='John Doe' 
+            <TextField
+              fullWidth
+              label='Name'
+              placeholder='John Doe'
               defaultValue={props.name}
             />
           </Grid>
