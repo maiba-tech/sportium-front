@@ -37,6 +37,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -64,6 +66,12 @@ const RegisterPage = () => {
     password: '',
     showPassword: false
   })
+
+  const router = useRouter()
+  const { status, data } = useSession();
+  useEffect(() => {
+    if (status === "authenticated") router.replace("/account-settings");
+  }, [status]);
 
   // ** Hook
   const theme = useTheme()

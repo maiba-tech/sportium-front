@@ -39,7 +39,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import axios from 'axios'
-import singIn, { signIn } from 'next-auth/react'
+import singIn, { signIn, useSession } from 'next-auth/react'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -70,7 +70,10 @@ const LoginPage = () => {
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
-
+  const { status, data } = useSession();
+  useEffect(() => {
+    if (status === "authenticated") router.replace("/account-settings");
+  }, [status]);
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
     console.log(values)

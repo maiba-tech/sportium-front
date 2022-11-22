@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react'
 
 const navigation = () => {
   const {status, data } = useSession();
+  console.log(data);
 
   if(status === "authenticated")
     return [
@@ -28,103 +29,40 @@ const navigation = () => {
       },
       {
         sectionTitle: 'Pages'
-      },
-      // {
-      //   title: 'Error',
-      //   icon: AlertCircleOutline,
-      //   path: '/pages/error',
-      //   openInNewTab: true
-      // },
-      // {
-      //   sectionTitle: 'User Interface'
-      // },
-      // {
-      //   title: 'Typography',
-      //   icon: FormatLetterCase,
-      //   path: '/typography'
-      // },
-      // {
-      //   title: 'Icons',
-      //   path: '/icons',
-      //   icon: GoogleCirclesExtended
-      // },
-      // {
-      //   title: 'Cards',
-      //   icon: CreditCardOutline,
-      //   path: '/cards'
-      // },
-      // {
-      //   title: 'Tables',
-      //   icon: Table,
-      //   path: '/tables'
-      // },
-      // {
-      //   icon: CubeOutline,
-      //   title: 'Form Layouts',
-      //   path: '/form-layouts'
-      // }
+      }
     ];
-  
+
+  if(status === "unauthenticated")
+    return [
+      {
+        title: 'Dashboard',
+        icon: HomeOutline,
+        path: '/'
+      },
+      {
+        sectionTitle: 'Pages'
+      },
+      {
+        title: 'Login',
+        icon: Login,
+        path: '/pages/login',
+        openInNewTab: true
+      },
+      {
+        title: 'Register',
+        icon: AccountPlusOutline,
+        path: '/pages/register',
+        openInNewTab: true
+      },
+    ]
+
   return [
     {
-      title: 'Dashboard',
-      icon: HomeOutline,
-      path: '/'
-    },
-    // {
-    //   title: 'Account Settings',
-    //   icon: AccountCogOutline,
-    //   path: '/account-settings'
-    // },
-    {
-      sectionTitle: 'Pages'
-    },
-    {
-      title: 'Login',
-      icon: Login,
-      path: '/pages/login',
-      openInNewTab: true
-    },
-    {
-      title: 'Register',
+      title: 'loading ... ',
       icon: AccountPlusOutline,
       path: '/pages/register',
       openInNewTab: true
     },
-    // {
-    //   title: 'Error',
-    //   icon: AlertCircleOutline,
-    //   path: '/pages/error',
-    //   openInNewTab: true
-    // },
-    // {
-    //   sectionTitle: 'User Interface'
-    // },
-    // {
-    //   title: 'Typography',
-    //   icon: FormatLetterCase,
-    //   path: '/typography'
-    // },
-    // {
-    //   title: 'Icons',
-    //   path: '/icons',
-    //   icon: GoogleCirclesExtended
-    // },
-    // {
-    //   title: 'Cards',
-    //   icon: CreditCardOutline,
-    //   path: '/cards'
-    // },
-    // {
-    //   title: 'Tables',
-    //   icon: Table,
-    //   path: '/tables'
-    // },
-    // {
-    //   icon: CubeOutline,
-    //   title: 'Form Layouts',
-    //   path: '/form-layouts'
-    // }
   ]
 }
 

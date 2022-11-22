@@ -30,7 +30,7 @@ export const authOptions = {
         async authorize(credentials, req) {
             const {email, password} = credentials;
             if(email === "omar@gmail.com" && password === "123")
-              return { id: "1", name: "omar"} 
+              return { id: "1", name: "omar", email:"@gmail"} 
         }
 
       })

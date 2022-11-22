@@ -26,6 +26,7 @@ import axios from 'axios'
 
 // use session import
 import { useSession } from 'next-auth/react'
+import { Router, useRouter } from 'next/router'
 
 const Tab = styled(MuiTab)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -47,8 +48,12 @@ const TabName = styled('span')(({ theme }) => ({
 
 const AccountSettings = () => {
 
-  const session = useSession();
-  console.log(session);
+  const { status, data } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "unauthenticated") router.replace("/pages/login");
+  }, [status]);
+  
   
   // ** State
   const [value, setValue] = useState('account')
