@@ -24,6 +24,9 @@ import TabSecurity from 'src/views/account-settings/TabSecurity'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 
+// use session import
+import { useSession } from 'next-auth/react'
+
 const Tab = styled(MuiTab)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     minWidth: 100
@@ -43,6 +46,10 @@ const TabName = styled('span')(({ theme }) => ({
 }))
 
 const AccountSettings = () => {
+
+  const session = useSession();
+  console.log(session);
+  
   // ** State
   const [value, setValue] = useState('account')
 

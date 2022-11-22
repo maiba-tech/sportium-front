@@ -9,19 +9,73 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import { useSession } from 'next-auth/react'
 
 const navigation = () => {
+  const {status, data } = useSession();
+
+  if(status === "authenticated")
+    return [
+      {
+        title: 'Dashboard',
+        icon: HomeOutline,
+        path: '/'
+      },
+      {
+        title: 'Account Settings',
+        icon: AccountCogOutline,
+        path: '/account-settings'
+      },
+      {
+        sectionTitle: 'Pages'
+      },
+      // {
+      //   title: 'Error',
+      //   icon: AlertCircleOutline,
+      //   path: '/pages/error',
+      //   openInNewTab: true
+      // },
+      // {
+      //   sectionTitle: 'User Interface'
+      // },
+      // {
+      //   title: 'Typography',
+      //   icon: FormatLetterCase,
+      //   path: '/typography'
+      // },
+      // {
+      //   title: 'Icons',
+      //   path: '/icons',
+      //   icon: GoogleCirclesExtended
+      // },
+      // {
+      //   title: 'Cards',
+      //   icon: CreditCardOutline,
+      //   path: '/cards'
+      // },
+      // {
+      //   title: 'Tables',
+      //   icon: Table,
+      //   path: '/tables'
+      // },
+      // {
+      //   icon: CubeOutline,
+      //   title: 'Form Layouts',
+      //   path: '/form-layouts'
+      // }
+    ];
+  
   return [
     {
       title: 'Dashboard',
       icon: HomeOutline,
       path: '/'
     },
-    {
-      title: 'Account Settings',
-      icon: AccountCogOutline,
-      path: '/account-settings'
-    },
+    // {
+    //   title: 'Account Settings',
+    //   icon: AccountCogOutline,
+    //   path: '/account-settings'
+    // },
     {
       sectionTitle: 'Pages'
     },
@@ -37,40 +91,40 @@ const navigation = () => {
       path: '/pages/register',
       openInNewTab: true
     },
-    {
-      title: 'Error',
-      icon: AlertCircleOutline,
-      path: '/pages/error',
-      openInNewTab: true
-    },
-    {
-      sectionTitle: 'User Interface'
-    },
-    {
-      title: 'Typography',
-      icon: FormatLetterCase,
-      path: '/typography'
-    },
-    {
-      title: 'Icons',
-      path: '/icons',
-      icon: GoogleCirclesExtended
-    },
-    {
-      title: 'Cards',
-      icon: CreditCardOutline,
-      path: '/cards'
-    },
-    {
-      title: 'Tables',
-      icon: Table,
-      path: '/tables'
-    },
-    {
-      icon: CubeOutline,
-      title: 'Form Layouts',
-      path: '/form-layouts'
-    }
+    // {
+    //   title: 'Error',
+    //   icon: AlertCircleOutline,
+    //   path: '/pages/error',
+    //   openInNewTab: true
+    // },
+    // {
+    //   sectionTitle: 'User Interface'
+    // },
+    // {
+    //   title: 'Typography',
+    //   icon: FormatLetterCase,
+    //   path: '/typography'
+    // },
+    // {
+    //   title: 'Icons',
+    //   path: '/icons',
+    //   icon: GoogleCirclesExtended
+    // },
+    // {
+    //   title: 'Cards',
+    //   icon: CreditCardOutline,
+    //   path: '/cards'
+    // },
+    // {
+    //   title: 'Tables',
+    //   icon: Table,
+    //   path: '/tables'
+    // },
+    // {
+    //   icon: CubeOutline,
+    //   title: 'Form Layouts',
+    //   path: '/form-layouts'
+    // }
   ]
 }
 

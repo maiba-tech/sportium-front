@@ -39,6 +39,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import axios from 'axios'
+import singIn, { signIn } from 'next-auth/react'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -96,9 +97,9 @@ const LoginPage = () => {
   }
   
   
-  useEffect(() => {
-    getData(); 
-  }, [])
+  // useEffect(() => {
+  //   getData(); 
+  // }, [])
 
   const getData = async () => {
     await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/hello-world`).then(response => {
@@ -232,9 +233,15 @@ const LoginPage = () => {
 
               // onClick={() => router.push('/')}
               onClick = {
-                (e) => {
+                async (e) => {
                   e.preventDefault(); 
-                  sendData(); 
+                  // sendData(); 
+                  const res = await signIn('credentials',{
+                    email: values.email,
+                    password: values.password,
+                    redirect: false
+                  });
+                  console.log(res);
 
                   // router.push('/account-settings')
                 }
