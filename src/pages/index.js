@@ -21,11 +21,32 @@ import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import { getSession } from 'next-auth/react'
+
+
+
+// 
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/pages/login',
+        permanent: false
+      }
+    }
+  }
+  return { props: { session: session } }
+}
+
+
 
 const Dashboard = () => {
+
   return (
     <ApexChartWrapper>
-      <Grid container spacing={6}>
+      {/* <Grid container spacing={6}>
         <Grid item xs={12} md={4}>
           <Trophy />
         </Grid>
@@ -93,7 +114,7 @@ const Dashboard = () => {
         <Grid item xs={12}>
           <Table />
         </Grid>
-      </Grid>
+      </Grid> */}
     </ApexChartWrapper>
   )
 }
