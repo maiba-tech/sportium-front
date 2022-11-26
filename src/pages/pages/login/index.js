@@ -39,7 +39,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import axios from 'axios'
-import singIn, { signIn, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
+import { Alert, AlertTitle, Modal } from '@mui/material'
+
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -59,21 +61,39 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
+
+// error modal style 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid',
+  boxShadow: 24,
+  p: 4,
+};
+
 const LoginPage = () => {
   // ** State
   const [values, setValues] = useState({
     password: '',
-    showPassword: false, 
+    showPassword: false,
     email: ''
   })
+
 
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
-  const { status, data } = useSession();
-  useEffect(() => {
-    if (status === "authenticated") router.replace("/account-settings");
-  }, [status]);
+
+  const [loginError, setLoginError] = useState({});
+  const [open, setOpen] = useState(false)
+
+  const handleOpen = () => setOpen(true); 
+  const handleClose = () => setOpen(false); 
+
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
     console.log(values)
@@ -87,31 +107,41 @@ const LoginPage = () => {
     event.preventDefault()
   }
 
-  const sendData = async () => {
-    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/login`, {
-      password: values.password, 
-      email: values.email
-    }).then(response => {
-      console.log(response.data)
-      router.push('/account-settings'); 
-    }).catch(err => {
-      console.log(err); 
-    })
-  }
-  
-  
-  // useEffect(() => {
-  //   getData(); 
-  // }, [])
+  const handleLogin = async () => {
 
-  const getData = async () => {
-    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles/hello-world`).then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error); 
-    })
+    //RegEx verification before sending data to backend 
+    if (values.email.length === 0 || values.password.length === 0) {
+      // console.log({ error: "email or password are empty" })
+      
+
+      setLoginError({
+        name: "Data Error",
+        message: "Email or password are empty"
+      });
+
+      handleOpen(); 
+    } else {
+      // send data 
+      const res = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        callbackUrl: '/',
+        redirect: false
+      })
+
+      if (res?.error) {
+
+        setLoginError(res?.error); 
+      } else {
+        router.push("/");
+      }
+
+      // we could here show why there is an error 
+    }
+
+
   }
+
 
   return (
     <Box className='content-center'>
@@ -234,24 +264,30 @@ const LoginPage = () => {
               variant='contained'
               sx={{ marginBottom: 7 }}
 
-              // onClick={() => router.push('/')}
-              onClick = {
-                async (e) => {
-                  e.preventDefault(); 
-                  // sendData(); 
-                  const res = await signIn('credentials',{
-                    email: values.email,
-                    password: values.password,
-                    redirect: false
-                  });
-                  console.log(res);
 
-                  // router.push('/account-settings')
+              onClick={
+                (e) => {
+                  e.preventDefault();
+                  handleLogin();
                 }
               }
             >
               Login
             </Button>
+
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+              <Alert severity="error">
+                <AlertTitle>{loginError.name}</AlertTitle>
+                {loginError.message}— <strong>check it out!</strong>
+              </Alert>
+              </Box>
+            </Modal>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
                 New on our platform?
@@ -261,31 +297,6 @@ const LoginPage = () => {
                   <LinkStyled>Create an account</LinkStyled>
                 </Link>
               </Typography>
-            </Box>
-            <Divider sx={{ my: 5 }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Facebook sx={{ color: '#497ce2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Twitter sx={{ color: '#1da1f2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Github
-                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
-                  />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Google sx={{ color: '#db4437' }} />
-                </IconButton>
-              </Link>
             </Box>
           </form>
         </CardContent>

@@ -25,7 +25,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 
 // use session import
-import { useSession } from 'next-auth/react'
+import { getSession, useSession } from 'next-auth/react'
 import { Router, useRouter } from 'next/router'
 
 const Tab = styled(MuiTab)(({ theme }) => ({
@@ -46,38 +46,52 @@ const TabName = styled('span')(({ theme }) => ({
   }
 }))
 
-const AccountSettings = () => {
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/pages/login',
+        permanent: false
+      }
+    }
+  }
+
+  // get the athlete profile by ID 
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${session.user.id}`)
+  const body = await res.json();
+
+
+  if (res.status === 200) {
+    return {
+      props: {
+        data: body,
+        session: session
+      }
+    }
+  }
+
+}
+
+const AccountSettings = (props) => {
 
   const { status, data } = useSession();
   const router = useRouter();
-  useEffect(() => {
-    if (status === "unauthenticated") router.replace("/pages/login");
-  }, [status]);
-  
-  
+
+
   // ** State
   const [value, setValue] = useState('account')
+
+  useEffect(() => {
+    console.log(props)
+  }, [])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
 
-  const [profile, setProfile] = useState({});
-
-
-  const getProfileById = async (id) => {
-    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/profiles?id=${id}`).then(response => {
-      setProfile(response.data);
-      console.log(response.data);
-    }).catch(err => {
-      console.log(err);
-    })
-
-  }
-
-  useEffect(() => {
-    getProfileById(localStorage.getItem('profile_id'));
-  }, [])
 
   return (
     <Card>
@@ -96,7 +110,7 @@ const AccountSettings = () => {
               </Box>
             }
           />
-          <Tab
+          {/* <Tab
             value='security'
             label={
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -113,22 +127,25 @@ const AccountSettings = () => {
                 <TabName>Info</TabName>
               </Box>
             }
-          />
+          /> */}
         </TabList>
 
         <TabPanel sx={{ p: 0 }} value='account'>
-          <TabAccount 
-            username = {profile.username}
-            name = {profile.name}
-            email = {profile.email}
+          <TabAccount
+            image={props.session.user.image}
+            full_name={props.data.firstName + " " + props.data.lastName}
+            email={props.data.email}
+            weight={props.data.weight}
+            height={props.data.height}
+            role={props.data.roles[0].name}
           />
         </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='security'>
+        {/* <TabPanel sx={{ p: 0 }} value='security'>
           <TabSecurity />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='info'>
           <TabInfo />
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     </Card>
   )

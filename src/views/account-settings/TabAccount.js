@@ -47,11 +47,8 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
 }))
 
 const TabAccount = (props) => {
-  // ** State
-  const [openAlert, setOpenAlert] = useState(true)
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
-
-  const onChange = file => {
+  
+   const onChange = file => {
     const reader = new FileReader()
     const { files } = file.target
     if (files && files.length !== 0) {
@@ -67,7 +64,7 @@ const TabAccount = (props) => {
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
+              <ImgStyled src={props.image} alt='Profile Pic' />
               <Box>
                 <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
                   Upload New Photo
@@ -92,19 +89,12 @@ const TabAccount = (props) => {
           <Grid item xs={12} sm={6}>
             <TextField 
               fullWidth 
-              label='Username' 
+              label='Full name' 
               placeholder='johnDoe' 
-              defaultValue={props.username} 
+              defaultValue={props.full_name} 
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Name' 
-              placeholder='John Doe' 
-              defaultValue={props.name}
-            />
-          </Grid>
+          
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -115,56 +105,49 @@ const TabAccount = (props) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type='number'
+              label='weight'
+              defaultValue={props.weight}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type='number'
+              label='height'
+              defaultValue={props.height}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type='text'
+              label='role'
+              defaultValue={props.role}
+              disabled
+            />
+          </Grid>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Role</InputLabel>
               <Select label='Role' defaultValue='admin'>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-                <MenuItem value='maintainer'>Maintainer</MenuItem>
                 <MenuItem value='subscriber'>Subscriber</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select label='Status' defaultValue='active'>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
-                <MenuItem value='pending'>Pending</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
-          </Grid>
-
-          {openAlert ? (
-            <Grid item xs={12} sx={{ mb: 3 }}>
-              <Alert
-                severity='warning'
-                sx={{ '& a': { fontWeight: 400 } }}
-                action={
-                  <IconButton size='small' color='inherit' aria-label='close' onClick={() => setOpenAlert(false)}>
-                    <Close fontSize='inherit' />
-                  </IconButton>
-                }
-              >
-                <AlertTitle>Your email is not confirmed. Please check your inbox.</AlertTitle>
-                <Link href='/' onClick={e => e.preventDefault()}>
-                  Resend Confirmation
-                </Link>
-              </Alert>
-            </Grid>
-          ) : null}
-
+          </Grid> */}
+          
           <Grid item xs={12}>
+            
+            {/* TODO: handle the update operation  */}
             <Button variant='contained' sx={{ marginRight: 3.5 }}>
               Save Changes
             </Button>
+
+            {/* TODO: handle when the user made updates are canselled  */}
             <Button type='reset' variant='outlined' color='secondary'>
-              Reset
+              Cancel
             </Button>
           </Grid>
         </Grid>
