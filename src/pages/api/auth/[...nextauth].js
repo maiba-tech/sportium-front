@@ -58,8 +58,10 @@ export const authOptions = {
         token.picture = user.image_url; 
         token.roles = user.roles; 
         token.athlete_id = user.athlete_id
+
         return {
           ...token,
+          
           // accessToken: user.data.token,
           // refreshToken: user.data.refreshToken,
         };

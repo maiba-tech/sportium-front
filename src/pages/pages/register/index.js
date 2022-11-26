@@ -68,10 +68,6 @@ const RegisterPage = () => {
   })
 
   const router = useRouter()
-  const { status, data } = useSession();
-  useEffect(() => {
-    if (status === "authenticated") router.replace("/account-settings");
-  }, [status]);
 
   // ** Hook
   const theme = useTheme()
