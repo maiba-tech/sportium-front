@@ -84,10 +84,6 @@ const AccountSettings = (props) => {
   // ** State
   const [value, setValue] = useState('account')
 
-  useEffect(() => {
-    console.log(props)
-  }, [])
-
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }

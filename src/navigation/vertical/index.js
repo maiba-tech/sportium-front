@@ -25,6 +25,7 @@ const navigation = () => {
     {
       sectionTitle: 'Pages'
     },
+
     // {
     //   title: 'Login',
     //   icon: Login,
@@ -51,6 +52,7 @@ const navigation = () => {
       icon: FormatLetterCase,
       path: '/typography'
     },
+
     // {
     //   title: 'Icons',
     //   path: '/icons',
