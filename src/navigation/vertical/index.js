@@ -51,7 +51,7 @@ const navigation = () => {
       title: 'Typography',
       icon: FormatLetterCase,
       path: '/typography'
-    },
+    }
 
     // {
     //   title: 'Icons',

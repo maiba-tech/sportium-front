@@ -1,20 +1,17 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-
+import NextAuth from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
 const API_LOGIN_ENDPOINT = `${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/login`
 const FRONT_LOGIN_ENDPOINT = "/pages/login"
 
-
 export const authOptions = {
-
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "enter your email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'text', placeholder: 'enter your email' },
+        password: { label: 'Password', type: 'password' }
       },
 
       async authorize(credentials, req) {
@@ -24,20 +21,17 @@ export const authOptions = {
             email: credentials.email,
             password: credentials.password
           }),
-          headers: { "Content-Type": "application/json" }
+          headers: { 'Content-Type': 'application/json' }
         })
 
         const athleteProfile = await res.json()
-
-        console.log("nextaut_athPro", athleteProfile);
-
+        
         if (res.ok && athleteProfile) {
           return athleteProfile
         }
 
         return null
       }
-
     })
   ],
   pages: {
@@ -52,42 +46,40 @@ export const authOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(token); 
+      console.log(token)
       if (account && user) {
-        token.name = user.first_name; 
-        token.picture = user.image_url; 
-        token.roles = user.roles; 
+        token.name = user.first_name
+        token.picture = user.image_url
+        token.roles = user.roles
         token.athlete_id = user.athlete_id
 
         return {
           ...token,
-          
+          user
+
           // accessToken: user.data.token,
           // refreshToken: user.data.refreshToken,
-        };
+        }
       }
 
-      return token;
+      return token
     },
 
     async session({ session, token }) {
-      console.log({"TOken imp" :token})
-      session.user.name = token.name;
-      session.user.id = token.sub;
-      session.user.image = token.picture; 
-      session.user.roles = token.roles; 
-
-      console.log({"Session im": session})
+      console.log({ 'TOken imp': token })
+      session.user.name = token.user.firstName
+      session.user.id = token.sub
+      session.user.image = token.picture
+      session.user.roles = token.roles
 
       // session.user.accessToken = token.accessToken;
 
-      return session;
-    },
-
+      return session
+    }
   },
 
   // Enable debug messages in the console if you are having problems
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development'
 }
 
 export default NextAuth(authOptions)

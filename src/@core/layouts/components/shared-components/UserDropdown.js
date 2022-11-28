@@ -65,7 +65,7 @@ const UserDropdown = () => {
     }
   }
 
-  const {data: session} = useSession();  
+  const { data: session } = useSession()
 
   return (
     <Fragment>
@@ -109,15 +109,15 @@ const UserDropdown = () => {
           </Box>
         </Box>
         <Divider sx={{ mt: 0, mb: 1 }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose("/account-settings")}>
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/account-settings')}>
           <Box sx={styles}>
             <AccountOutline sx={{ marginRight: 2 }} />
             Profile
           </Box>
         </MenuItem>
-        
+
         <Divider />
-      
+
         <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
           <Box sx={styles}>
             <HelpCircleOutline sx={{ marginRight: 2 }} />

@@ -42,7 +42,6 @@ import axios from 'axios'
 import { signIn, useSession } from 'next-auth/react'
 import { Alert, AlertTitle, Modal } from '@mui/material'
 
-
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
@@ -61,8 +60,7 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
-
-// error modal style 
+// error modal style
 const style = {
   position: 'absolute',
   top: '50%',
@@ -72,8 +70,8 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid',
   boxShadow: 24,
-  p: 4,
-};
+  p: 4
+}
 
 const LoginPage = () => {
   // ** State
@@ -83,16 +81,15 @@ const LoginPage = () => {
     email: ''
   })
 
-
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
 
-  const [loginError, setLoginError] = useState({});
+  const [loginError, setLoginError] = useState({})
   const [open, setOpen] = useState(false)
 
-  const handleOpen = () => setOpen(true); 
-  const handleClose = () => setOpen(false); 
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
@@ -108,20 +105,18 @@ const LoginPage = () => {
   }
 
   const handleLogin = async () => {
-
-    //RegEx verification before sending data to backend 
+    //RegEx verification before sending data to backend
     if (values.email.length === 0 || values.password.length === 0) {
       // console.log({ error: "email or password are empty" })
-      
 
       setLoginError({
-        name: "Data Error",
-        message: "Email or password are empty"
-      });
+        error: 'Data Error',
+        message: 'Email or password are empty'
+      })
 
-      handleOpen(); 
+      handleOpen()
     } else {
-      // send data 
+      // send data
       const res = await signIn('credentials', {
         email: values.email,
         password: values.password,
@@ -129,21 +124,18 @@ const LoginPage = () => {
         redirect: false
       })
 
-      if (res?.error) {
+      // console.log(res)
 
-        setLoginError(res?.error); 
-        console.log(res)
-        handleOpen(); 
+      if (res?.error) {
+        setLoginError({ error: 'Login error', message: 'Email or password is incorrect' })
+        handleOpen()
       } else {
-        router.push("/account-settings");
+        router.push('/account-settings')
       }
 
-      // we could here show why there is an error 
+      // we could here show why there is an error
     }
-
-
   }
-
 
   return (
     <Box className='content-center'>
@@ -229,7 +221,14 @@ const LoginPage = () => {
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField onChange={handleChange('email')} autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+            <TextField
+              onChange={handleChange('email')}
+              autoFocus
+              fullWidth
+              id='email'
+              label='Email'
+              sx={{ marginBottom: 4 }}
+            />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -265,14 +264,10 @@ const LoginPage = () => {
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-
-
-              onClick={
-                (e) => {
-                  e.preventDefault();
-                  handleLogin();
-                }
-              }
+              onClick={e => {
+                e.preventDefault()
+                handleLogin()
+              }}
             >
               Login
             </Button>
@@ -280,14 +275,14 @@ const LoginPage = () => {
             <Modal
               open={open}
               onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
+              aria-labelledby='modal-modal-title'
+              aria-describedby='modal-modal-description'
             >
               <Box sx={style}>
-              <Alert severity="error">
-                <AlertTitle>{loginError.name}</AlertTitle>
-                {loginError.message}— <strong>check it out!</strong>
-              </Alert>
+                <Alert severity='error'>
+                  <AlertTitle>{loginError.error}</AlertTitle>
+                  {loginError.message}— <strong>check it out!</strong>
+                </Alert>
               </Box>
             </Modal>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -295,7 +290,7 @@ const LoginPage = () => {
                 New on our platform?
               </Typography>
               <Typography variant='body2'>
-                <Link passHref href='/pages/register'>
+                <Link passHref href='/pages/register/athletes'>
                   <LinkStyled>Create an account</LinkStyled>
                 </Link>
               </Typography>

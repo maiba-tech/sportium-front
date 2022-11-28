@@ -46,9 +46,8 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
   }
 }))
 
-const TabAccount = (props) => {
-  
-   const onChange = file => {
+const TabAccount = props => {
+  const onChange = file => {
     const reader = new FileReader()
     const { files } = file.target
     if (files && files.length !== 0) {
@@ -56,7 +55,6 @@ const TabAccount = (props) => {
       reader.readAsDataURL(files[0])
     }
   }
-
 
   return (
     <CardContent>
@@ -87,14 +85,9 @@ const TabAccount = (props) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Full name' 
-              placeholder='johnDoe' 
-              defaultValue={props.full_name} 
-            />
+            <TextField fullWidth label='Full name' placeholder='johnDoe' defaultValue={props.full_name} />
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -105,29 +98,13 @@ const TabAccount = (props) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              type='number'
-              label='weight'
-              defaultValue={props.weight}
-            />
+            <TextField fullWidth type='number' label='weight' defaultValue={props.weight} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              type='number'
-              label='height'
-              defaultValue={props.height}
-            />
+            <TextField fullWidth type='number' label='height' defaultValue={props.height} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              type='text'
-              label='role'
-              defaultValue={props.role}
-              disabled
-            />
+            <TextField fullWidth type='text' label='role' defaultValue={props.role} disabled />
           </Grid>
           {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
@@ -137,9 +114,8 @@ const TabAccount = (props) => {
               </Select>
             </FormControl>
           </Grid> */}
-          
+
           <Grid item xs={12}>
-            
             {/* TODO: handle the update operation  */}
             <Button variant='contained' sx={{ marginRight: 3.5 }}>
               Save Changes

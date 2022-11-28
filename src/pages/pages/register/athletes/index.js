@@ -38,7 +38,7 @@ import themeConfig from 'src/configs/themeConfig'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
-import axios from 'axios';
+import axios from 'axios'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
@@ -48,7 +48,6 @@ import { useSession } from 'next-auth/react'
 const CustomInput = forwardRef((props, ref) => {
   return <TextField fullWidth {...props} inputRef={ref} label='Birth Date' autoComplete='off' />
 })
-
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -84,7 +83,7 @@ const RegisterPage = () => {
     height: 0.0,
     weight: 0.0,
     dob: '',
-    confirmation:''
+    confirmation: ''
   })
   const [date, setDate] = useState(null)
   const router = useRouter()
@@ -98,14 +97,10 @@ const RegisterPage = () => {
 
   const handleChangePassword = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
-    var matchedOrNot = (values.password == values.password2) ? true : false;
-    console.log(values.password2);
-    if(!matchedOrNot)
-      document.getElementById("confirmation").innerHTML= "Passwords do not match !";
-    else
-    document.getElementById("confirmation").innerHTML= "";
-
-
+    var matchedOrNot = values.password == values.password2 ? true : false
+    console.log(values.password2)
+    if (!matchedOrNot) document.getElementById('confirmation').innerHTML = 'Passwords do not match !'
+    else document.getElementById('confirmation').innerHTML = ''
   }
 
   const handleClickShowPassword = () => {
@@ -339,7 +334,7 @@ const RegisterPage = () => {
               />
             </FormControl>
             <FormControl fullWidth sx={{ marginBottom: 4 }}>
-              <InputLabel htmlFor='auth-register-password' >Password Confirmation</InputLabel>
+              <InputLabel htmlFor='auth-register-password'>Password Confirmation</InputLabel>
               <OutlinedInput
                 label='Password Confirmation'
                 value={values.password2}
@@ -359,9 +354,7 @@ const RegisterPage = () => {
                   </InputAdornment>
                 }
               />
-              <p id="confirmation"
-              value={values.confirmation}
-              ></p>
+              <p id='confirmation' value={values.confirmation}></p>
             </FormControl>
             <TextField
               fullWidth

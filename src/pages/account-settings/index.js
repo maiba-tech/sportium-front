@@ -68,14 +68,12 @@ export async function getServerSideProps(context) {
         session: session
       }
     }
-  }
-  else
-  return {
-    props: {
-      data: "body"
+  } else
+    return {
+      props: {
+        data: 'body'
+      }
     }
-  }
-
 }
 
 const AccountSettings = props => {
