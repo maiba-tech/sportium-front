@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 const API_LOGIN_ENDPOINT = `${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/login`
-const FRONT_LOGIN_ENDPOINT = "/pages/login"
+const FRONT_LOGIN_ENDPOINT = '/pages/login/index'
 
 export const authOptions = {
   // Configure one or more authentication providers
