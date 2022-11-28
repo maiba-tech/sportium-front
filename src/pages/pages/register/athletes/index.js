@@ -31,6 +31,7 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import Select from '@mui/material/Select'
 
 import MenuItem from '@mui/material/MenuItem'
+
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
@@ -38,6 +39,7 @@ import themeConfig from 'src/configs/themeConfig'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 import axios from 'axios';
+
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import { useRouter } from 'next/router'
@@ -46,6 +48,8 @@ import { useSession } from 'next-auth/react'
 const CustomInput = forwardRef((props, ref) => {
   return <TextField fullWidth {...props} inputRef={ref} label='Birth Date' autoComplete='off' />
 })
+
+
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }

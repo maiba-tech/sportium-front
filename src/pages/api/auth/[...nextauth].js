@@ -52,7 +52,7 @@ export const authOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
-
+      console.log(token); 
       if (account && user) {
         token.name = user.first_name; 
         token.picture = user.image_url; 

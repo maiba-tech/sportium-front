@@ -128,12 +128,12 @@ const AccountSettings = props => {
 
         <TabPanel sx={{ p: 0 }} value='account'>
           <TabAccount
-           // image={props.session.user.image}
+            image={props.session.user.image}
             full_name={props.data.firstName + ' ' + props.data.lastName}
             email={props.data.email}
             weight={props.data.weight}
             height={props.data.height}
-            role={"props.data.roles[0].name"}
+            role={props.data.roles[0].name}
           />
         </TabPanel>
         {/* <TabPanel sx={{ p: 0 }} value='security'>
