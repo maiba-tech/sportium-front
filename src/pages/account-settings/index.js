@@ -46,9 +46,8 @@ const TabName = styled('span')(({ theme }) => ({
   }
 }))
 
-
 export async function getServerSideProps(context) {
-  const session = await getSession(context);
+  const session = await getSession(context)
 
   if (!session) {
     return {
@@ -59,11 +58,9 @@ export async function getServerSideProps(context) {
     }
   }
 
-  // get the athlete profile by ID 
+  // get the athlete profile by ID
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${session.user.id}`)
-  const body = await res.json();
-
-
+  const body = await res.json()
   if (res.status === 200) {
     return {
       props: {
@@ -72,14 +69,18 @@ export async function getServerSideProps(context) {
       }
     }
   }
+  else
+  return {
+    props: {
+      data: "body"
+    }
+  }
 
 }
 
-const AccountSettings = (props) => {
-
-  const { status, data } = useSession();
-  const router = useRouter();
-
+const AccountSettings = props => {
+  const { status, data } = useSession()
+  const router = useRouter()
 
   // ** State
   const [value, setValue] = useState('account')
@@ -87,7 +88,6 @@ const AccountSettings = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
-
 
   return (
     <Card>
@@ -129,7 +129,7 @@ const AccountSettings = (props) => {
         <TabPanel sx={{ p: 0 }} value='account'>
           <TabAccount
             image={props.session.user.image}
-            full_name={props.data.firstName + " " + props.data.lastName}
+            full_name={props.data.firstName + ' ' + props.data.lastName}
             email={props.data.email}
             weight={props.data.weight}
             height={props.data.height}
