@@ -26,20 +26,20 @@ import { getSession } from 'next-auth/react'
 
 
 // 
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
+// export async function getServerSideProps(context) {
+//   const session = await getSession(context);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/pages/login',
-        permanent: false
-      }
-    }
-  }
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/pages/login',
+//         permanent: false
+//       }
+//     }
+//   }
   
-  return { props: { session: session } }
-}
+//   return { props: { session: session } }
+// }
 
 
 

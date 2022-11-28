@@ -71,11 +71,13 @@ export const authOptions = {
     },
 
     async session({ session, token }) {
-      
+      console.log({"TOken imp" :token})
       session.user.name = token.name;
-      session.user.id = token.athlete_id;
+      session.user.id = token.sub;
       session.user.image = token.picture; 
       session.user.roles = token.roles; 
+
+      console.log({"Session im": session})
 
       // session.user.accessToken = token.accessToken;
 

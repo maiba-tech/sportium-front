@@ -125,15 +125,17 @@ const LoginPage = () => {
       const res = await signIn('credentials', {
         email: values.email,
         password: values.password,
-        callbackUrl: '/',
+        callbackUrl: '/account-settings',
         redirect: false
       })
 
       if (res?.error) {
 
         setLoginError(res?.error); 
+        console.log(res)
+        handleOpen(); 
       } else {
-        router.push("/");
+        router.push("/account-settings");
       }
 
       // we could here show why there is an error 
