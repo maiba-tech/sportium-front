@@ -22,6 +22,8 @@ import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
 import { getSession } from 'next-auth/react'
+import { useState, useEffect } from 'react'
+
 
 //
 export async function getServerSideProps(context) {
@@ -39,78 +41,42 @@ export async function getServerSideProps(context) {
   return { props: { session: session } }
 }
 
+
 const Dashboard = () => {
+  const [data, setData] = useState(null)
+  const [isLoading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/`)
+      .then(res => res.json())
+      .then(data => {
+        setData(data)
+        setLoading(false)
+
+        //console.log(data[0])
+      })
+  }, [])
+  if (isLoading) return <p>Loading...</p>
+  if (!data) return <p>No profile data</p>
+
   return (
     <ApexChartWrapper>
-      {/* <Grid container spacing={6}>
-        <Grid item xs={12} md={4}>
-          <Trophy />
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <StatisticsCard />
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          <WeeklyOverview />
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          <TotalEarning />
-        </Grid>
+      <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
-            <Grid item xs={6}>
-              <CardStatisticsVerticalComponent
-                stats='$25.6k'
-                icon={<Poll />}
-                color='success'
-                trendNumber='+42%'
-                title='Total Profit'
-                subtitle='Weekly Profit'
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <CardStatisticsVerticalComponent
-                stats='$78'
-                title='Refunds'
-                trend='negative'
-                color='secondary'
-                trendNumber='-15%'
-                subtitle='Past Month'
-                icon={<CurrencyUsd />}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <CardStatisticsVerticalComponent
-                stats='862'
-                trend='negative'
-                trendNumber='-18%'
-                title='New Project'
-                subtitle='Yearly Project'
-                icon={<BriefcaseVariantOutline />}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <CardStatisticsVerticalComponent
-                stats='15'
-                color='warning'
-                trend='negative'
-                trendNumber='-18%'
-                subtitle='Last Week'
-                title='Sales Queries'
-                icon={<HelpCircleOutline />}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          <SalesByCountries />
-        </Grid>
-        <Grid item xs={12} md={12} lg={8}>
-          <DepositWithdraw />
-        </Grid>
-        <Grid item xs={12}>
-          <Table />
-        </Grid>
-      </Grid> */}
+            {data.map(namelist => (
+              <Grid item xs={6} key={namelist.image_url}>
+                <CardStatisticsVerticalComponent
+                  stats={namelist.firstName}
+                  icon={namelist.image_url}
+                  title={namelist.roles[0].name}
+                />
+              </Grid>
+            ))}
+          </Grid>{' '}
+        </Grid>{' '}
+      </Grid>{' '}
     </ApexChartWrapper>
   )
 }

@@ -106,15 +106,9 @@ const TabAccount = props => {
           <Grid item xs={12} sm={6}>
             <TextField fullWidth type='text' label='role' defaultValue={props.role} disabled />
           </Grid>
-          {/* <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
-                <MenuItem value='subscriber'>Subscriber</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid> */}
-
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth type='text' label='gender' defaultValue={props.gender} />
+          </Grid>
           <Grid item xs={12}>
             {/* TODO: handle the update operation  */}
             <Button variant='contained' sx={{ marginRight: 3.5 }}>

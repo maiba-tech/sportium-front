@@ -17,17 +17,12 @@ const CardStatsVertical = props => {
     <Card>
       <CardContent>
         <Box sx={{ display: 'flex', marginBottom: 5.5, alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <Avatar sx={{ boxShadow: 3, marginRight: 4, color: 'common.white', backgroundColor: `${color}.main` }}>
-            {icon}
-          </Avatar>
-          <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-            <DotsVertical />
-          </IconButton>
-        </Box>
-        <Typography sx={{ fontWeight: 600, fontSize: '0.875rem' }}>{title}</Typography>
+          <img src={icon} alt="" />
+         </Box>
+        <Typography sx={{ fontWeight: 100, fontSize: '0.775rem' }}> Role : {title}</Typography>
         <Box sx={{ marginTop: 1.5, display: 'flex', flexWrap: 'wrap', marginBottom: 1.5, alignItems: 'flex-start' }}>
-          <Typography variant='h6' sx={{ mr: 2 }}>
-            {stats}
+          <Typography sx={{ fontWeight: 500, fontSize: '0.775rem' }}>
+            FirstName: {stats}
           </Typography>
           <Typography
             component='sup'

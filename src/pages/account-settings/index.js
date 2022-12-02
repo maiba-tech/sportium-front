@@ -48,7 +48,7 @@ const TabName = styled('span')(({ theme }) => ({
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-
+  console.log(session.user.id)
   if (!session) {
     return {
       redirect: {
@@ -132,6 +132,7 @@ const AccountSettings = props => {
             weight={props.data.weight}
             height={props.data.height}
             role={props.data.roles[0].name}
+            gender={(props.data.gender=='M' || props.data.gender=='m' )? 'Male':'Female'}
           />
         </TabPanel>
         {/* <TabPanel sx={{ p: 0 }} value='security'>
