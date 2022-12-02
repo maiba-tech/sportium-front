@@ -39,7 +39,9 @@ import { getSession } from 'next-auth/react'
 //   return { props: { session: session } }
 // }
 import { useState, useEffect } from 'react'
+
 const i = 2
+
 const Dashboard = () => {
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
@@ -51,18 +53,20 @@ const Dashboard = () => {
       .then(data => {
         setData(data)
         setLoading(false)
+
         //console.log(data[0])
       })
   }, [])
   if (isLoading) return <p>Loading...</p>
   if (!data) return <p>No profile data</p>
-  return (
+
+return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
             {data.map(namelist => (
-              <Grid item xs={6}>
+              <Grid item xs={6} key={namelist.image_url}>
                 <CardStatisticsVerticalComponent
                   stats={namelist.firstName}
                   icon={namelist.image_url}
