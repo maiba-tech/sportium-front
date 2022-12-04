@@ -83,10 +83,11 @@ const RegisterPage = () => {
     height: 0.0,
     weight: 0.0,
     dob: '',
-    cv:null,
-    certificates:[],
     confirmation : ''
   })
+
+  const [certificates,setCertificates]=useState([]);
+  const [cv,setCv]=useState(null);
   const [date, setDate] = useState(null)
   const router = useRouter()
 
@@ -95,6 +96,14 @@ const RegisterPage = () => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+  }
+
+  const handleCertificatesChange = event=>{
+    setCertificates([...certificates,event.target.files])
+  }
+
+  const handleCVChange = event=>{
+    setCv(event.target.files[0])
   }
 
   const handleChangePassword = prop => event => {
@@ -131,7 +140,7 @@ const RegisterPage = () => {
       values.gender.trim() === '' ||
       values.weight === 0.0 ||
       values.height === 0.0 ||
-      values.cv === null
+      cv === null
     )
       return false
 
@@ -147,14 +156,14 @@ const RegisterPage = () => {
     console.log('password ' + values.password)
     console.log('Gender ' + values.gender)
     console.log('DOB ' + values.dob)
-    console.log('CV ' + values.cv)
-    console.log('DOB ' + values.certificates)
   }
 
   const sendData = async () => {
     if (!validState()) {
       alert('Please Enter Your information !')
     } else {
+      console.log(cv);
+      console.log(atob(btoa(certificates)));
       await axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/coaches/create`, {
           password: values.password,
@@ -165,8 +174,8 @@ const RegisterPage = () => {
           weight: values.weight,
           gender: values.gender,
           birthDate: values.dob,
-          cv:values.cv,
-          certificates:values.certificates
+          cv:btoa(cv),
+          certificates:btoa(certificates)
         })
         .then(response => {
           printData()
@@ -389,14 +398,14 @@ const RegisterPage = () => {
             <TextField
             fullWidth
             type='file'
-            onChange={handleChange('cv')}
+            onChange={handleCVChange}
             required={true}
             sx={{ marginBottom: 4 }}
             />
             <label>Certificates</label>
             <TextField
             type='file'
-            onChange={handleChange('certificates')}
+            onChange={handleCertificatesChange}
             inputProps={{multiple:true}}
             />
             <FormControlLabel
