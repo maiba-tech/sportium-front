@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment, forwardRef } from 'react'
+import { useState, useEffect, Fragment, forwardRef } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -94,20 +94,57 @@ const RegisterPage = () => {
   // ** Hook
   const theme = useTheme()
 
+  useEffect(() => {
+   console.log(certificates)
+  }, [certificates]);
+
+
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
-  const handleCertificatesChange = event=>{
-    let certif=[]
-    for(let c of event.target.files){
-      certif.push(btoa(c))
-    }
-    setCertificates([...certificates,certif])
+ const readFileContents = async (file) => {
+    return new Promise((resolve, reject) => {
+      let fileReader = new FileReader();
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = reject;
+      fileReader.readAsDataURL(file);
+    });
   }
 
+  const readAllFiles = async (AllFiles) => {
+    const results = await Promise.all(AllFiles.map(async (file) => {
+      const fileContents = await readFileContents(file);
+      return fileContents;
+    }));
+    // console.log(results, 'resutls');
+    return results;
+  }
+
+  const handleCertificatesChange = event=>{
+    // let certif=[...certificates]
+
+    let AllFiles = []
+
+    for(let i=0;i<event.target.files.length;i++ ){
+      AllFiles.push(event.target.files[i])
+      }
+    readAllFiles(AllFiles).then(result => {
+      setCertificates(result)
+    })
+
+    }
+
+
   const handleCVChange = event=>{
-    setCv(btoa(event.target.files[0]))
+    let reader=new FileReader()
+    reader.readAsDataURL(event.target.files[0])
+    reader.onload=()=>{
+      setCv(reader.result)
+
+    }
   }
 
   const handleChangePassword = prop => event => {
