@@ -117,9 +117,10 @@ const RegisterPage = () => {
   const readAllFiles = async (AllFiles) => {
     const results = await Promise.all(AllFiles.map(async (file) => {
       const fileContents = await readFileContents(file);
+
       return fileContents;
     }));
-    // console.log(results, 'resutls');
+    
     return results;
   }
 
