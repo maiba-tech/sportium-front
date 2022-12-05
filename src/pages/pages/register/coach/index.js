@@ -99,11 +99,15 @@ const RegisterPage = () => {
   }
 
   const handleCertificatesChange = event=>{
-    setCertificates([...certificates,event.target.files])
+    let certif=[]
+    for(let c of event.target.files){
+      certif.push(btoa(c))
+    }
+    setCertificates([...certificates,certif])
   }
 
   const handleCVChange = event=>{
-    setCv(event.target.files[0])
+    setCv(btoa(event.target.files[0]))
   }
 
   const handleChangePassword = prop => event => {
@@ -138,8 +142,8 @@ const RegisterPage = () => {
       values.lastName.trim() === '' ||
       values.firstName.trim() === '' ||
       values.gender.trim() === '' ||
-      values.weight === 0.0 ||
-      values.height === 0.0 ||
+      values.weight < 0.0 ||
+      values.height < 0.0 ||
       cv === null
     )
       return false
@@ -163,7 +167,7 @@ const RegisterPage = () => {
       alert('Please Enter Your information !')
     } else {
       console.log(cv);
-      console.log(atob(btoa(certificates)));
+      console.log(certificates);
       await axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/coaches/create`, {
           password: values.password,
@@ -174,8 +178,8 @@ const RegisterPage = () => {
           weight: values.weight,
           gender: values.gender,
           birthDate: values.dob,
-          cv:btoa(cv),
-          certificates:btoa(certificates)
+          cv:cv,
+          certificates:certificates
         })
         .then(response => {
           printData()
