@@ -126,8 +126,10 @@ const AccountSettings = props => {
 
         <TabPanel sx={{ p: 0 }} value='account'>
           <TabAccount
+            id={props.session.user.id}
             image={props.session.user.image}
-            full_name={props.data.firstName + ' ' + props.data.lastName}
+            firstName={props.data.firstName}
+            lastName={props.data.lastName}
             email={props.data.email}
             weight={props.data.weight}
             height={props.data.height}

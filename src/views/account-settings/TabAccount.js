@@ -1,6 +1,8 @@
 // ** React Imports
 import { useEffect, useState } from 'react'
 
+import { getSession, useSession } from 'next-auth/react'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -56,6 +58,43 @@ const TabAccount = props => {
     }
   }
 
+  const handleChange = prop => event => {
+    if(prop=="height"|| prop=="weight"){
+      setValues({ ...values, [prop]: parseFloat(event.target.value) })
+      return;
+    }
+    setValues({ ...values, [prop]: event.target.value })
+  }
+  let id;
+
+  useEffect(()=>{
+    id=props.id;
+  });
+
+  const [values,setValues]=useState({
+    firstName:props.firstName,
+    lastName:props.lastName,
+    height:parseFloat(props.height),
+    weight:parseFloat(props.weight)
+  });
+
+  const sendData=()=>{
+    console.log(values)
+    axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/update/${id}`,
+      {
+        firstName:values.firstName,
+        lastName:values.lastName,
+        height:values.height,
+        weight:values.weight
+      })
+      .then(response=> {
+          console.log(response)
+        })
+      .catch(err=>{
+        console.log(err)
+      });
+  }
+
   return (
     <CardContent>
       <form>
@@ -84,8 +123,15 @@ const TabAccount = props => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Full name' placeholder='johnDoe' defaultValue={props.full_name} />
+          <Grid item xs={12} sm={3}>
+            <TextField fullWidth label='First name' placeholder='johnDoe' value={values.firstName}
+                       onChange={handleChange('firstName')}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={3}>
+            <TextField fullWidth label='Last name' placeholder='johnDoe' defaultValue={values.lastName}
+                       onChange={handleChange('lastName')}/>
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -98,20 +144,28 @@ const TabAccount = props => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='number' label='weight' defaultValue={props.weight} />
+            <TextField fullWidth type='number' label='weight' value={values.weight}
+            onChange={handleChange('weight')}/>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='number' label='height' defaultValue={props.height} />
+            <TextField fullWidth type='number' label='height' defaultValue={props.height}
+                       onChange={handleChange('height')}/>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField fullWidth type='text' label='role' defaultValue={props.role} disabled />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='text' label='gender' defaultValue={props.gender} />
+            <TextField fullWidth type='text' label='gender' defaultValue={props.gender} disabled/>
           </Grid>
           <Grid item xs={12}>
             {/* TODO: handle the update operation  */}
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
+            <Button variant='contained' sx={{ marginRight: 3.5 }}
+              onClick={e=>{
+                e.preventDefault()
+                sendData()
+              }
+            }
+            >
               Save Changes
             </Button>
 
