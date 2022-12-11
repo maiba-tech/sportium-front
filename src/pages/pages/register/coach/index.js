@@ -50,7 +50,7 @@ import { redirect } from 'next/dist/server/api-utils'
 // ** Server side rendering 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-  if (session.user) {
+  if (session) {
     return {
       redirect: {
         destination: '/',

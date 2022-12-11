@@ -61,7 +61,8 @@ const TabAccount = props => {
   const handleChange = prop => event => {
     if(prop=="height"|| prop=="weight"){
       setValues({ ...values, [prop]: parseFloat(event.target.value) })
-      return;
+      
+return;
     }
     setValues({ ...values, [prop]: event.target.value })
   }

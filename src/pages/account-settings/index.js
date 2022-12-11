@@ -48,7 +48,6 @@ const TabName = styled('span')(({ theme }) => ({
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-  console.log(session.user.id)
   if (!session) {
     return {
       redirect: {
