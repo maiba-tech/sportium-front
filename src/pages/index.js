@@ -70,7 +70,7 @@ const Dashboard = () => {
                 <CardStatisticsVerticalComponent
                   stats={namelist.firstName}
                   icon={namelist.image_url}
-                  title={namelist.roles[0].name}
+                  title={namelist.roles.map(role => {return role['name']}).join("\r\n")}
                 />
               </Grid>
             ))}

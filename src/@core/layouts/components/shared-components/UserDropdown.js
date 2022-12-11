@@ -103,7 +103,7 @@ const UserDropdown = () => {
             <Box sx={{ display: 'flex', marginLeft: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 600 }}>{session?.user.name}</Typography>
               <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                {session?.user.roles[0].name}
+                {session?.user.roles.map(role => {return role['name']}).join("\r\n")}
               </Typography>
             </Box>
           </Box>
