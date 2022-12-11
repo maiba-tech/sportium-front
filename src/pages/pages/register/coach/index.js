@@ -38,12 +38,36 @@ import axios from 'axios'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
+import { getSession, useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { handleCertificatesChange, handleCVChange, sendCoachPendingData, sleep } from 'src/handlers/CoachFormHandlers'
 import { Alert, AlertTitle, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Modal } from '@mui/material'
 import { inputFields } from 'src/register-data/RegisterData'
 import CircularIndeterminate from 'src/@core/components/sportium-comp/CircularIndeterminate'
+import { redirect } from 'next/dist/server/api-utils'
+
+
+// ** Server side rendering 
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  if (session.user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  // if there is some thing important from server before accessing the register page 
+  return {
+    props : {
+      title: "Coach register form"
+    }
+  }
+}
+
+
 
 
 // ** Styled Components
@@ -93,24 +117,30 @@ const polygonStyle = [
   }
 ]
 
-// error modal style
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid',
-  boxShadow: 24,
-  p: 4
-}
 
-const RegisterPage = () => {
+const RegisterPage = (props) => {
 
-  const [openSpinner, setOpenSpinner] = useState(false); 
+
+  // ** States
+  // ref to the first render on submission data
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+  const [values, setValues] = useState({
+    showPassword: false,
+    showPassword2: false,
+  })
+
+  const [openSpinner, setOpenSpinner] = useState(false);
 
   const [open, setOpen] = useState(false);
+
+  const isNotApproved = useRef(true)
+
+  const [certificates, setCertificates] = useState([]);
+  const [cv, setCv] = useState(null);
+  const router = useRouter()
+
+  // ** Handlers
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -121,27 +151,9 @@ const RegisterPage = () => {
   };
 
 
-  // ** States
-  // ref to the first render on submission data
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  // const [open, setOpen] = useState(false)
-
-  const [values, setValues] = useState({
-    showPassword: false,
-    showPassword2: false,
-  })
-
-  const isNotApproved = useRef(true)
-
-  const [certificates, setCertificates] = useState([]);
-  const [cv, setCv] = useState(null);
-  const router = useRouter()
-
-
   const onSubmit = (data) => {
 
-    if(isNotApproved.current)
-    {
+    if (isNotApproved.current) {
       handleClickOpen()
       handleCertificatesChange(setCertificates, data.certificates)
       handleCVChange(setCv, data.cv[0])
@@ -194,7 +206,7 @@ const RegisterPage = () => {
         certificates: data.certificates
       })
       .then(response => {
-        
+
         setOpenSpinner(false)
         router.push('/pages/login/')
         console.log(response)
@@ -231,6 +243,7 @@ const RegisterPage = () => {
                     {
                       polygonStyle.map((style) => (
                         <polygon
+                          key={style.id}
                           id={style.id}
                           opacity={style.opacity}
                           fill={theme.palette.common.black}
@@ -270,8 +283,6 @@ const RegisterPage = () => {
               {themeConfig.templateName}
             </Typography>
           </Box>
-
-          
 
           <Box sx={{ mb: 6 }}>
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
@@ -368,10 +379,10 @@ const RegisterPage = () => {
               />
               <p id='confirmation' value={values.confirmation}></p>
             </FormControl>
-            {/* Dialog to accept data submission */}
 
+            {/* Dialog to accept data submission */}
             <div>
-           
+
               <Dialog
                 open={open}
                 onClose={handleClose}
@@ -384,8 +395,8 @@ const RegisterPage = () => {
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
                     Please click one more time to SignUP button to validate the informations
-                    Disclaimer: Please be patient after submitting the form the automatic treatement will take some time 
-                    **Your demand will be treated after redirection you can use the platform as an athlete** 
+                    Disclaimer: Please be patient after submitting the form the automatic treatement will take some time
+                    **Your demand will be treated after redirection you can use the platform as an athlete**
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -396,11 +407,7 @@ const RegisterPage = () => {
                 </DialogActions>
               </Dialog>
             </div>
-
-
             {/*  */}
-
-
             <FormControlLabel
               control={<Checkbox />}
               label={
@@ -414,20 +421,20 @@ const RegisterPage = () => {
             />
 
             {
-              openSpinner ? 
-              <CircularIndeterminate /> 
-              : 
-              <Button
-                fullWidth
-                size='large'
-                variant='contained'
-                sx={{ marginBottom: 7 }}
-                type='submit'
-              >
-                Sign up
-              </Button>
+              openSpinner ?
+                <CircularIndeterminate />
+                :
+                <Button
+                  fullWidth
+                  size='large'
+                  variant='contained'
+                  sx={{ marginBottom: 7 }}
+                  type='submit'
+                >
+                  Sign up
+                </Button>
             }
-            
+
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
                 Already have an account?
