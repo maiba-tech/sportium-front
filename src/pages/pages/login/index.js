@@ -287,13 +287,18 @@ const LoginPage = () => {
             </Modal>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
-                New on our platform?
+                New on our platform? Create an account as
               </Typography>
               <Typography variant='body2'>
                 <Link passHref href='/pages/register/athletes'>
-                  <LinkStyled>Create an account</LinkStyled>
+                  <LinkStyled> Athlete </LinkStyled>
+                </Link>
+                <strong> | </strong>
+                <Link passHref href='/pages/register/coach'>
+                  <LinkStyled> Coach</LinkStyled>
                 </Link>
               </Typography>
+              
             </Box>
           </form>
         </CardContent>
