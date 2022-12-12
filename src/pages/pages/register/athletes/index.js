@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment, forwardRef } from 'react'
+import { useRef, useState, Fragment, forwardRef } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -29,6 +29,7 @@ import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import Select from '@mui/material/Select'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import MenuItem from '@mui/material/MenuItem'
 
@@ -38,7 +39,12 @@ import themeConfig from 'src/configs/themeConfig'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
-import axios from 'axios';
+import axios from 'axios'
+
+//**Yup validation */
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
@@ -48,7 +54,6 @@ import { useSession } from 'next-auth/react'
 const CustomInput = forwardRef((props, ref) => {
   return <TextField fullWidth {...props} inputRef={ref} label='Birth Date' autoComplete='off' />
 })
-
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -84,10 +89,29 @@ const RegisterPage = () => {
     height: 0.0,
     weight: 0.0,
     dob: '',
-    confirmation:''
+    confirmation: ''
   })
   const [date, setDate] = useState(null)
   const router = useRouter()
+
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    email: Yup.string().required('email is required'),
+    password: Yup.string()
+      .transform(x => (x === '' ? undefined : x))
+      .concat(Yup.string().required('Password is required'))
+      .min(6, 'Password must be at least 6 characters')
+  })
+  const formOptions = { resolver: yupResolver(validationSchema) }
+
+  const { register, handleSubmit, reset, formState } = useForm(formOptions)
+  const { errors } = formState
+
+  function onSubmit(data) {
+    //return  createUser(data);
+    console.log(data)
+  }
 
   // ** Hook
   const theme = useTheme()
@@ -96,16 +120,19 @@ const RegisterPage = () => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
+  const handleChangePassword1 = prop => event => {
+    setValues({ ...values, [prop]: event.target.value })
+    if (values.password.length < 8) {
+      document.getElementById('password-lenght').innerHTML = 'Password must contain 8 caracters'
+    } else document.getElementById('password-lenght').innerHTML = ''
+  }
+
   const handleChangePassword = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
-    var matchedOrNot = (values.password == values.password2) ? true : false;
-    console.log(values.password2);
-    if(!matchedOrNot)
-      document.getElementById("confirmation").innerHTML= "Passwords do not match !";
-    else
-    document.getElementById("confirmation").innerHTML= "";
-
-
+    var matchedOrNot = values.password == values.password2 ? true : false
+    console.log(values.password2)
+    if (!matchedOrNot) document.getElementById('confirmation').innerHTML = 'Passwords do not match !'
+    else document.getElementById('confirmation').innerHTML = ''
   }
 
   const handleClickShowPassword = () => {
@@ -132,7 +159,8 @@ const RegisterPage = () => {
       values.lastName.trim() === '' ||
       values.firstName.trim() === '' ||
       values.gender.trim() === '' ||
-      values.weight === 0.0 ||
+      values.weight < 140 ||
+      values.weight < 40 ||
       values.height === 0.0
     )
       return false
@@ -259,189 +287,200 @@ const RegisterPage = () => {
             </Typography>
             <Typography variant='body2'>ILISI makes your app management easy and fun!</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField
-              fullWidth
-              type='text'
-              label='firstName'
-              placeholder='Maria'
-              value={values.firstName}
-              onChange={handleChange('firstName')}
-              required={true}
-              sx={{ marginBottom: 4 }}
-            />
-            <TextField
-              fullWidth
-              type='text'
-              label='lastName'
-              placeholder='Toren'
-              value={values.lastName}
-              onChange={handleChange('lastName')}
-              required={true}
-              sx={{ marginBottom: 4 }}
-            />
-            <TextField
-              fullWidth
-              type='date'
-              id='Date Of Birth'
-              placeholderText='MM-DD-YYYY'
-              sx={{ marginBottom: 4 }}
-              required={true}
-              onChange={handleChange('dob')}
-              value={values.dob}
-            />
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-select-label'>Gender</InputLabel>
-              <Select
-                label='Country'
-                defaultValue=''
-                id='form-layouts-separator-select'
-                labelId='form-layouts-separator-select-label'
+          {/*<form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>*/}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className='form-row'>
+              <div className='form-group col'>
+                <TextField
+                  name='firstName'
+                  fullWidth
+                  type='text'
+                  label='firstName'
+                  placeholder='Maria'
+                  required={true}
+                  sx={{ marginBottom: 4 }}
+                  {...register('firstName')}
+                  className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.firstName?.message}</div>
+              </div>
+              <TextField
+                fullWidth
+                name='lastName'
+                type='text'
+                label='lastName'
+                placeholder='Toren'
+                value={values.lastName}
                 required={true}
-                onChange={handleChange('gender')}
-                value={values.gender}
+                {...register('lastName')}
                 sx={{ marginBottom: 4 }}
+                className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
+              />
+              <p id='confirmation'></p>
+              <TextField
+                fullWidth
+                type='date'
+                id='Date Of Birth'
+                placeholderText='MM-DD-YYYY'
+                sx={{ marginBottom: 4 }}
+                required={true}
+                {...register('date')}
+                className={`form-control ${errors.date ? 'is-invalid' : ''}`}
+              />
+              <p id='confirmation'></p>
+              <FormControl fullWidth>
+                <InputLabel id='form-layouts-separator-select-label'>Gender</InputLabel>
+                <Select
+                  label='Gender'
+                  defaultValue=''
+                  id='form-layouts-separator-select'
+                  labelId='form-layouts-separator-select-label'
+                  required={true}
+                  sx={{ marginBottom: 4 }}
+                >
+                  <MenuItem value='F'>Female</MenuItem>
+                  <MenuItem value='M'>Male</MenuItem>
+                </Select>
+              </FormControl>
+              <p id='confirmation'></p>
+              <TextField
+                fullWidth
+                type='email'
+                name='email'
+                label='Email'
+                placeholder='carterleonard@gmail.com'
+                required={true}
+                sx={{ marginBottom: 4 }}
+                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              />
+              <p id='confirmation'></p>
+              <FormControl fullWidth sx={{ marginBottom: 4 }}>
+                <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
+                <OutlinedInput
+                  className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                  name='password'
+                  label='Password'
+                  id='auth-register-password'
+
+                  // onChangeCapture={handleChangePassword1('password')}
+                  type={values.showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        aria-label='toggle password visibility'
+                      >
+                        {values.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <p id='password-lenght'></p>
+              </FormControl>
+              <FormControl fullWidth sx={{ marginBottom: 4 }}>
+                <InputLabel htmlFor='auth-register-password'>Password Confirmation</InputLabel>
+                <OutlinedInput
+                  name='password-confirmation'
+                  value={values.password2}
+                  id='Password2'
+                  type={values.showPassword2 ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onClick={handleClickShowPassword2}
+                        onMouseDown={handleMouseDownPassword2}
+                        aria-label='toggle password visibility'
+                      >
+                        {values.showPassword2 ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <p id='confirmation'></p>
+              </FormControl>
+              <TextField
+                fullWidth
+                type='number'
+                label='Height'
+                placeholder='159'
+                value={values.height}
+                onChange={handleChange('height')}
+                required={true}
+                sx={{ marginBottom: 4 }}
+              />
+              <p id='confirmation'></p>
+              <TextField
+                fullWidth
+                type='number'
+                label='Weight'
+                placeholder='56 kg'
+                value={values.weight}
+                onChange={handleChange('weight')}
+                required={true}
+                sx={{ marginBottom: 4 }}
+              />
+              <p id='confirmation'></p>
+              <FormControlLabel
+                control={<Checkbox />}
+                label={
+                  <Fragment>
+                    <span>I agree to </span>
+                    <Link href='/' passHref>
+                      <LinkStyled onClick={e => e.preventDefault()}>privacy policy & terms</LinkStyled>
+                    </Link>
+                  </Fragment>
+                }
+              />
+              <Button
+                fullWidth
+                size='large'
+                type='submit'
+                variant='contained'
+                sx={{ marginBottom: 7 }}
+                disabled={formState.isSubmitting}
               >
-                <MenuItem value='F'>Female</MenuItem>
-                <MenuItem value='M'>Male</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              type='email'
-              label='Email'
-              placeholder='carterleonard@gmail.com'
-              value={values.email}
-              onChange={handleChange('email')}
-              required={true}
-              sx={{ marginBottom: 4 }}
-            />
-            <FormControl fullWidth sx={{ marginBottom: 4 }}>
-              <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
-              <OutlinedInput
-                label='Password'
-                value={values.password}
-                id='auth-register-password'
-                onChange={handleChange('password')}
-                type={values.showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      edge='end'
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      aria-label='toggle password visibility'
-                    >
-                      {values.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ marginBottom: 4 }}>
-              <InputLabel htmlFor='auth-register-password' >Password Confirmation</InputLabel>
-              <OutlinedInput
-                label='Password Confirmation'
-                value={values.password2}
-                id='Password2'
-                onChange={handleChange('password2')}
-                type={values.showPassword2 ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      edge='end'
-                      onClick={handleClickShowPassword2}
-                      onMouseDown={handleMouseDownPassword2}
-                      aria-label='toggle password visibility'
-                    >
-                      {values.showPassword2 ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              <p id="confirmation"
-              value={values.confirmation}
-              ></p>
-            </FormControl>
-            <TextField
-              fullWidth
-              type='number'
-              label='Height'
-              placeholder='159'
-              value={values.height}
-              onChange={handleChange('height')}
-              required={true}
-              sx={{ marginBottom: 4 }}
-            />
-            <TextField
-              fullWidth
-              type='number'
-              label='Weight'
-              placeholder='56 kg'
-              value={values.weight}
-              onChange={handleChange('weight')}
-              required={true}
-              sx={{ marginBottom: 4 }}
-            />
-            <FormControlLabel
-              control={<Checkbox />}
-              label={
-                <Fragment>
-                  <span>I agree to </span>
-                  <Link href='/' passHref>
-                    <LinkStyled onClick={e => e.preventDefault()}>privacy policy & terms</LinkStyled>
+                {formState.isSubmitting && <span className='spinner-border spinner-border-sm mr-1'></span>}
+                Sign up
+              </Button>
+              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <Typography variant='body2' sx={{ marginRight: 2 }}>
+                  Already have an account?
+                </Typography>
+                <Typography variant='body2'>
+                  <Link passHref href='/pages/login'>
+                    <LinkStyled>Sign in instead</LinkStyled>
                   </Link>
-                </Fragment>
-              }
-            />
-            <Button
-              fullWidth
-              size='large'
-              type='submit'
-              variant='contained'
-              sx={{ marginBottom: 7 }}
-              onClick={e => {
-                e.preventDefault()
-                sendData()
-              }}
-            >
-              Sign up
-            </Button>
-            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Typography variant='body2' sx={{ marginRight: 2 }}>
-                Already have an account?
-              </Typography>
-              <Typography variant='body2'>
-                <Link passHref href='/pages/login'>
-                  <LinkStyled>Sign in instead</LinkStyled>
+                </Typography>
+              </Box>
+              <Divider sx={{ my: 5 }}>or</Divider>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Link href='/' passHref>
+                  <IconButton component='a' onClick={e => e.preventDefault()}>
+                    <Facebook sx={{ color: '#497ce2' }} />
+                  </IconButton>
                 </Link>
-              </Typography>
-            </Box>
-            <Divider sx={{ my: 5 }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Facebook sx={{ color: '#497ce2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Twitter sx={{ color: '#1da1f2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Github
-                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
-                  />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Google sx={{ color: '#db4437' }} />
-                </IconButton>
-              </Link>
-            </Box>
+                <Link href='/' passHref>
+                  <IconButton component='a' onClick={e => e.preventDefault()}>
+                    <Twitter sx={{ color: '#1da1f2' }} />
+                  </IconButton>
+                </Link>
+                <Link href='/' passHref>
+                  <IconButton component='a' onClick={e => e.preventDefault()}>
+                    <Github
+                      sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
+                    />
+                  </IconButton>
+                </Link>
+                <Link href='/' passHref>
+                  <IconButton component='a' onClick={e => e.preventDefault()}>
+                    <Google sx={{ color: '#db4437' }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            </div>
           </form>
         </CardContent>
       </Card>
