@@ -1,8 +1,10 @@
-// ** React Imports
-import { useState, Fragment, useEffect } from 'react'
-
-// ** Next Imports
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
 import Link from 'next/link'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { useRef, useState, Fragment, forwardRef } from 'react'
 
 // ** MUI Components
 import Box from '@mui/material/Box'
@@ -28,6 +30,10 @@ import Twitter from 'mdi-material-ui/Twitter'
 import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
+import Select from '@mui/material/Select'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import MenuItem from '@mui/material/MenuItem'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -35,10 +41,16 @@ import themeConfig from 'src/configs/themeConfig'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
+import axios from 'axios'
+
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
-import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
+
+//export { AddEdit };
+const CustomInput = forwardRef((props, ref) => {
+  return <TextField fullWidth {...props} inputRef={ref} label='Birth Date' autoComplete='off' />
+})
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -60,31 +72,80 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
-const RegisterPage = () => {
-  // ** States
-  const [values, setValues] = useState({
-    password: '',
-    showPassword: false
-  })
-
-  const router = useRouter()
-
-  // ** Hook
+const AddEdit = () => {
+  //const user =;
+  //const isAddMode = true;
+ const router = useRouter()
   const theme = useTheme()
 
-  const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
+  // form validation rules
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    email: Yup.string().required('Email is required'),
+    password: Yup.string()
+      .transform(x => (x === '' ? undefined : x))
+      .concat(Yup.string().required('Password is required'))
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/[0-9]/, 'Password requires a number')
+      .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .matches(/[A-Z]/, 'Password requires an uppercase letter')
+      .matches(/[^\w]/, 'Password requires a symbol'),
+    date: Yup.date()
+      .required('Date of birth is required')
+      .max('2010-01-01', 'The minimum DOB is 2010-01-01!')
+      .min('1950-01-01', 'The minimum DOB is 1950-01-01!'),
+    passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    height: Yup.number()
+      .typeError('you must specify a number')
+      .required('Height is required')
+      .min(1, 'Height should be greater than 1 meter')
+      .max(2.5, 'Height must be less than 2.5 meter')
+      .default(150),
+    weight: Yup.number()
+      .typeError('you must specify a number')
+      .required('Weight is required')
+      .min(40, 'Weight should be greater than 40 kg')
+      .max(140, 'Weight must be less than 140 kg')
+      .default(50)
+  })
+  const formOptions = { resolver: yupResolver(validationSchema) }
+  const { register, handleSubmit, reset, formState } = useForm(formOptions)
+  const { errors } = formState
 
-  const handleMouseDownPassword = event => {
-    event.preventDefault()
-  }
 
-  return (
+
+  const sendData = async (values) => {
+    let dob = values.date.getFullYear()+"-"+(parseInt(values.date.getMonth())+1)+"-"+values.date.getDate();
+    {
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/create`, {
+          password: values.password,
+          email: values.email,
+          lastName: values.lastName,
+          firstName: values.firstName,
+          height: values.height,
+          weight: values.weight,
+          gender: values.gender,
+          birthDate: dob
+        })
+        .then(response => {
+          console.log(response)
+          router.push('/pages/login/')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+  function onSubmit(data) {
+    //return  createUser(data);
+    console.log(data)
+    sendData(data);
+  }
+  
+return (
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
@@ -165,82 +226,124 @@ const RegisterPage = () => {
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
               Adventure starts here 🚀
             </Typography>
-            <Typography variant='body2'>Make your app management easy and fun!</Typography>
+            <Typography variant='body2'>ILISI makes your app management easy and fun!</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='username' label='Username' sx={{ marginBottom: 4 }} />
-            <TextField fullWidth type='email' label='Email' sx={{ marginBottom: 4 }} />
-            <FormControl fullWidth>
-              <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
-              <OutlinedInput
-                label='Password'
-                value={values.password}
-                id='auth-register-password'
-                onChange={handleChange('password')}
-                type={values.showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      edge='end'
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      aria-label='toggle password visibility'
-                    >
-                      {values.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <FormControlLabel
-              control={<Checkbox />}
-              label={
-                <Fragment>
-                  <span>I agree to </span>
-                  <Link href='/' passHref>
-                    <LinkStyled onClick={e => e.preventDefault()}>privacy policy & terms</LinkStyled>
-                  </Link>
-                </Fragment>
-              }
-            />
-            <Button fullWidth size='large' type='submit' variant='contained' sx={{ marginBottom: 7 }}>
-              Sign up
-            </Button>
-            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Typography variant='body2' sx={{ marginRight: 2 }}>
-                Already have an account?
-              </Typography>
-              <Typography variant='body2'>
-                <Link passHref href='/pages/login'>
-                  <LinkStyled>Sign in instead</LinkStyled>
-                </Link>
-              </Typography>
-            </Box>
-            <Divider sx={{ my: 5 }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Facebook sx={{ color: '#497ce2' }} />
-                </IconButton>
+          {/*<form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>*/}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className='form-group'>
+              <div className='form-group col mb-4'>
+                <label>First Name</label>
+                <TextField
+                  name='firstName'
+                  type='text'
+                  {...register('firstName')}
+                  className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.firstName?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Last Name</label>
+                <TextField
+                  name='lastName'
+                  type='text'
+                  {...register('lastName')}
+                  className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.lastName?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Date Of Birth</label>
+                <TextField
+                  TextField
+                  fullWidth
+                  type='date'
+                  id='Date Of Birth'
+                  placeholderText='MM-DD-YYYY'
+                  sx={{ marginBottom: 4 }}
+                  required={true}
+                  {...register('date')}
+                  className={`form-control ${errors.date ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.date?.message}</div>
+              </div>
+            </div>
+            <div className='form-group'>
+              <div className='form-group col'>
+                <label>Email</label>
+                <TextField
+                  name='email'
+                  type='email'
+                  {...register('email')}
+                  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.email?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Password</label>
+                <TextField
+                  name='password'
+                  type='password'
+                  {...register('password')}
+                  className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.password?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Confirm Password </label>
+                <TextField
+
+                  name='passwordConfirmation'
+                  type='password'
+                  {...register('passwordConfirmation')}
+                  className={`form-control ${errors.passwordConfirmation ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.passwordConfirmation?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label className='mb-2'>Gender </label>
+                <select name='gender' id='gender'  {...register('gender')} className={'form-select form-select-lg '}>
+                  <option value='m'>Male</option>
+                  <option value='f'>Female</option>
+                </select>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Height </label>
+                <TextField
+                  name='height'
+                  type='text'
+                  {...register('height')}
+                  className={`form-control ${errors.height ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.height?.message}</div>
+              </div>
+              <div className='form-group col mb-4'>
+                <label>Weight </label>
+                <TextField
+                  name='weight'
+                  type='number'
+                  {...register('weight')}
+                  className={`form-control ${errors.weight ? 'is-invalid' : ''}`}
+                />
+                <div className='invalid-feedback'>{errors.weight?.message}</div>
+              </div>
+            </div>
+            <div className='form-group mb-4'>
+              <button type='submit' disabled={formState.isSubmitting} className='btn btn-primary mr-2'>
+                {formState.isSubmitting && <span className='spinner-border spinner-border-sm mr-1'></span>}
+                Save
+              </button>
+              <button
+                onClick={() => reset(formOptions.defaultValues)}
+                type='button'
+                disabled={formState.isSubmitting}
+                className='btn btn-secondary'
+              >
+                Reset
+              </button>
+              <Link href='/' class='btn btn-info'>
+                Cancel
               </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Twitter sx={{ color: '#1da1f2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Github
-                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
-                  />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={e => e.preventDefault()}>
-                  <Google sx={{ color: '#db4437' }} />
-                </IconButton>
-              </Link>
-            </Box>
+            </div>
           </form>
         </CardContent>
       </Card>
@@ -248,6 +351,6 @@ const RegisterPage = () => {
     </Box>
   )
 }
-RegisterPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
+AddEdit.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
-export default RegisterPage
+export default AddEdit

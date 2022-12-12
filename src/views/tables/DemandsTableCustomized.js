@@ -63,6 +63,9 @@ const demands_data = [
   }
 ]
 
+
+const TableFields = ["Curriculum Vitae", "Demand number", "Details", "Accept"]
+
 const DemandsTableCustomized = () => {
   return (
     <TableContainer component={Paper}>
@@ -70,10 +73,11 @@ const DemandsTableCustomized = () => {
         <TableHead>
           <TableRow>
             <StyledTableCell>Coach name</StyledTableCell>
-            <StyledTableCell align='right'>Curriculum Vitae</StyledTableCell>
-            <StyledTableCell align='right'>Demand number</StyledTableCell>
-            <StyledTableCell align='right'>Details</StyledTableCell>
-            <StyledTableCell align='right'>Accept</StyledTableCell>
+            
+            {TableFields.map(cell => (
+              <StyledTableCell align='right'>{cell}</StyledTableCell>
+            ))}
+            
           </TableRow>
         </TableHead>
         <TableBody>
