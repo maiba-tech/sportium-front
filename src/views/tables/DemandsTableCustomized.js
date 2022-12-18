@@ -7,12 +7,8 @@ import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import { Button, IconButton, Link } from '@mui/material'
 
-import { Box } from '@mui/system'
-
-import DoneIcon from '@mui/icons-material/Done';
-import DeleteIcon from '@mui/icons-material/Delete';
+import SingleTableDialog from '../demands/SingleTableDialog'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -24,91 +20,31 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover
-  },
+const TableFields = ["Avatar", "Coach name", "Curriculum Vitae", "Coach email", "Details", "Accept"]
 
-  // hide last border
-  '&:last-of-type td, &:last-of-type th': {
-    border: 0
-  }
-}))
+const DemandsTableCustomized = (props) => {
 
-const demands_data = [
-  {
-    "coach_name": "Mohamed ahrrass",
-    "cv": "url",
-    "demand_number": "1"
-  },
-  {
-    "coach_name": "John Doe",
-    "cv": "url2",
-    "demand_number": "2"
-  },
-  {
-    "coach_name": "Karlin herera",
-    "cv": "url3",
-    "demand_number": "3"
-  },
-  {
-    "coach_name": "Justin depal",
-    "cv": "url4",
-    "demand_number": "4"
-  },
-  {
-    "coach_name": "Justina martinez",
-    "cv": "url5",
-    "demand_number": "5"
-  }
-]
-
-
-const TableFields = ["Curriculum Vitae", "Demand number", "Details", "Accept"]
-
-const DemandsTableCustomized = () => {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label='customized table'>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Coach name</StyledTableCell>
-            
-            {TableFields.map(cell => (
-              <StyledTableCell align='right'>{cell}</StyledTableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+          <TableHead>
+            <TableRow>
+              {TableFields.map(cell => (
+                <StyledTableCell align='center'>{cell}</StyledTableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.demands.map(row => (
+              <SingleTableDialog
+                row={row}
+              />
             ))}
-            
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {demands_data.map(row => (
-            <StyledTableRow key={row.coach_name}>
-              <StyledTableCell component='th' scope='row'>
-                {row.coach_name}
-              </StyledTableCell>
-              <StyledTableCell align='right'>{row.cv}</StyledTableCell>
-              <StyledTableCell align='right'>{row.demand_number}</StyledTableCell>
-              <StyledTableCell align='right'>
-                <Link href="#">see details</Link>
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                <Box sx={{ '& button': { m: 1 } }}>
-                  <div>
-                    <IconButton color="success" aria-label="accept demand" component="label">
-                      <DoneIcon />
-                    </IconButton>
-                    <IconButton color="error" aria-label="deny demand" component="label">
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                </Box>
-
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   )
 }
 
