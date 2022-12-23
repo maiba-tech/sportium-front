@@ -95,7 +95,7 @@ const TabDemand = props => {
                                 primary="Curriculum Vitae"
                                 secondary={
                                     <React.Fragment>
-                                        <Link target={"_blank"} href={props.documents.cv} underline="always">
+                                        <Link target={"_blank"} href={props.cv} underline="always">
                                             see cv
                                         </Link>
                                     </React.Fragment>
@@ -116,14 +116,14 @@ const TabDemand = props => {
                                 subheader={<li />}
                             >
                                 <ListSubheader>{`Certificates`}</ListSubheader>
-                                {props.documents.certificates.map((certificate) => (
+                                {props.certificates.map((certificate) => (
                                     <li key={`section-${1}`}>
                                         <ul>
                                             <ListItem key={`item-${1}-${1}`}>
                                                 <ListItemText
                                                     secondary={
                                                         <React.Fragment>
-                                                            <Link target={"_blank"} href={certificate} underline="always">
+                                                            <Link target={"_blank"} href={certificate.url} underline="always">
                                                                 see certificate
                                                             </Link>
                                                         </React.Fragment>
@@ -137,8 +137,8 @@ const TabDemand = props => {
                         </ListItem>
                         <ListItem>
                             <ListItemText
-                                primary="State"
-                                secondary={props.state}
+                                primary="Demand Type"
+                                secondary={props.type}
                             />
                         </ListItem>
                     </List>

@@ -50,15 +50,19 @@ const SingleTableDialog = (props) => {
 
 
     return (
-        <StyledTableRow key={props.row.demand.demand_id}>
+        <StyledTableRow key={props.row.id}>
             <StyledTableCell align='center'>
-                <Avatar src={`https://avatars.dicebear.com/api/male/${props.row.demand.coach_pending.id}.svg`} />
+                <Avatar src={`https://avatars.dicebear.com/api/male/${props.row.coachPending.id}.svg`} />
             </StyledTableCell>
             <StyledTableCell align='center'>
-                {props.row.demand.coach_pending.firstName + " " + props.row.demand.coach_pending.lastName}
+                {props.row.coachPending.firstName + " " + props.row.coachPending.lastName}
             </StyledTableCell>
-            <StyledTableCell align='center'>{props.row.demand.documents.cv}</StyledTableCell>
-            <StyledTableCell align='center'>{props.row.demand.coach_pending.email}</StyledTableCell>
+            <StyledTableCell align='center'>
+                <Link href={props.row.cvUrl} color="inherit">
+                    Link
+                </Link>
+            </StyledTableCell>
+            <StyledTableCell align='center'>{props.row.coachPending.email}</StyledTableCell>
             <StyledTableCell align='center'>
                 <Button variant='contained' color='warning' onClick={() => handleClickOpen()}>
                     Details
@@ -83,17 +87,21 @@ const SingleTableDialog = (props) => {
                                 <TabContext value='demand'>
                                     <TabPanel sx={{ p: 0 }} value='demand'>
                                         <TabDemand
-                                            id={props.row.demand.coach_pending.id}
+                                            id={props.row.coachPending.id}
+
                                             // image={row.demand.user.image}
-                                            firstName={props.row.demand.coach_pending.firstName}
-                                            lastName={props.row.demand.coach_pending.lastName}
-                                            email={props.row.demand.coach_pending.email}
-                                            weight={props.row.demand.coach_pending.weight}
-                                            height={props.row.demand.coach_pending.height}
+                                            firstName={props.row.coachPending.firstName}
+                                            lastName={props.row.coachPending.lastName}
+                                            email={props.row.coachPending.email}
+                                            weight={props.row.coachPending.weight}
+                                            height={props.row.coachPending.height}
+
                                             // role={row.demand.roles[0].name}
-                                            gender={(props.row.demand.coach_pending.gender == 'M' || props.row.demand.coach_pending.gender == 'm') ? 'Male' : 'Female'}
-                                            documents={props.row.demand.documents}
-                                            state={props.row.demand.state}
+                                            gender={(props.row.coachPending.gender == 'M' || props.row.coachPending.gender == 'm') ? 'Male' : 'Female'}
+                                    
+                                            certificates = {props.row.certificates}
+                                            cv={props.row.cvUrl}
+                                            type={props.row.type}
                                         />
                                     </TabPanel>
                                 </TabContext>
