@@ -23,8 +23,18 @@ const navigation = () => {
       path: '/account-settings'
     },
     {
+      title: 'Demands',
+      icon: FormatLetterCase,
+      path: '/demands'
+    },
+    {
       sectionTitle: 'Pages'
     },
+    {
+      title: 'Typography',
+      icon: FormatLetterCase,
+      path: '/typography'
+    }
 
     // {
     //   title: 'Login',
@@ -47,11 +57,7 @@ const navigation = () => {
     // {
     //   sectionTitle: 'User Interface'
     // },
-    {
-      title: 'Typography',
-      icon: FormatLetterCase,
-      path: '/typography'
-    }
+    
 
     // {
     //   title: 'Icons',
