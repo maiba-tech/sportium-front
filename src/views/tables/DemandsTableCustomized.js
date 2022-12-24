@@ -20,7 +20,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const TableFields = ["Avatar", "Coach name", "Curriculum Vitae", "Coach email", "Details", "Accept"]
+const TableFields = ["Avatar", "Coach name", "Demand state", "Curriculum Vitae", "Coach email", "Details"]
 
 const DemandsTableCustomized = (props) => {
 

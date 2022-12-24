@@ -1,16 +1,18 @@
 
 import TableRow from '@mui/material/TableRow'
 import { styled } from '@mui/material/styles'
-import { Avatar, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Link, TextField } from '@mui/material'
+import { Alert, Avatar, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Link, Snackbar, TextField } from '@mui/material'
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import { Box } from '@mui/system'
 
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { TabContext, TabPanel } from '@mui/lab'
 import TabDemand from '../demands/TabDemand'
+import axios from 'axios'
+import { Router, useRouter } from 'next/router'
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -37,17 +39,81 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const SingleTableDialog = (props) => {
 
+    /**States */
     const [open, setOpen] = useState(false);
+    const [updateDemand, setUpdateDemand] = useState(false)
+    const router = useRouter(); 
 
+    const [messageSnack, setMessageSnack] = useState({
+        message: "",
+        severity: ""
+    })
+
+    const isActionFirstRender = useRef(true)
+
+    const [openSnackBar, setOpenSnackBar] = useState(false);
+
+
+    const handleSnackBarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackBar(false);
+    };
+
+    // could take accept or deny 
+    const [demandAction, setDemandAction] = useState("");
+
+    /**Handlers */
     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
+
         setOpen(false);
     };
 
+    const handleDemand = () => {
+        setUpdateDemand(true)
 
+
+        updateDemandState();
+        setUpdateDemand(true)
+        setOpen(false);
+
+        window.location.reload()
+
+    };
+
+    useEffect(() => {
+        if(isActionFirstRender.current)
+        {
+            isActionFirstRender.current = false; 
+            
+return 
+        }
+        handleDemand()
+    }, [demandAction])
+
+
+    const updateDemandState = async () => {
+        console.log({ "demand acrioj": demandAction })
+        if (demandAction.trim(' ').length !== 0) {
+            await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/Admin/${props.row.id}/${demandAction}`)
+                .then(res => {
+                    res.status === 200 ? setMessageSnack({ message: "Demand updated succefully", severity: "success" }) : setMessageSnack({ message: "Unkown error occured", severity: "warning" })
+                    setOpenSnackBar(true)
+                })
+                .catch(err => {
+                    setMessageSnack({ message: "Server error ", severity: "error" })
+                    setOpenSnackBar(true)
+                })
+
+        }
+
+    }
 
     return (
         <StyledTableRow key={props.row.id}>
@@ -58,10 +124,14 @@ const SingleTableDialog = (props) => {
                 {props.row.coachPending.firstName + " " + props.row.coachPending.lastName}
             </StyledTableCell>
             <StyledTableCell align='center'>
+                {props.row.requestStateUpdates[0].stateName}
+            </StyledTableCell>
+            <StyledTableCell align='center'>
                 <Link href={props.row.cvUrl} color="inherit">
                     Link
                 </Link>
             </StyledTableCell>
+
             <StyledTableCell align='center'>{props.row.coachPending.email}</StyledTableCell>
             <StyledTableCell align='center'>
                 <Button variant='contained' color='warning' onClick={() => handleClickOpen()}>
@@ -71,12 +141,13 @@ const SingleTableDialog = (props) => {
             <StyledTableCell align='right'>
                 <Box sx={{ '& button': { m: 1 } }}>
                     <div>
-                        <IconButton color="success" aria-label="accept demand" component="label">
+                        {/* <IconButton color="success" aria-label="accept demand" component="label">
                             <DoneIcon />
                         </IconButton>
                         <IconButton color="error" aria-label="deny demand" component="label">
                             <DeleteIcon />
-                        </IconButton>
+                        </IconButton> */}
+                        <Alert severity='warning'>Open details</Alert>
                     </div>
                 </Box>
                 <div>
@@ -98,8 +169,8 @@ const SingleTableDialog = (props) => {
 
                                             // role={row.demand.roles[0].name}
                                             gender={(props.row.coachPending.gender == 'M' || props.row.coachPending.gender == 'm') ? 'Male' : 'Female'}
-                                    
-                                            certificates = {props.row.certificates}
+                                            state={props.row.requestStateUpdates.stateName}
+                                            certificates={props.row.certificates}
                                             cv={props.row.cvUrl}
                                             type={props.row.type}
                                         />
@@ -107,13 +178,46 @@ const SingleTableDialog = (props) => {
                                 </TabContext>
                             </Card>
                         </DialogContent>
+
                         <DialogActions>
-                            <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleClose()}>Deny</Button>
-                            <Button color="success" startIcon={<DoneIcon />} onClick={() => handleClose()}>Accept</Button>
+                            {updateDemand === false ?
+                                (
+                                    <>
+                                        <Button
+                                            color="error"
+                                            startIcon={<DeleteIcon />}
+                                            onClick={() => {
+                                                setDemandAction("deny")
+                                            }}>
+                                            Deny
+                                        </Button>
+                                        <Button
+                                            color="success"
+                                            startIcon={<DoneIcon />}
+                                            onClick={() => {
+                                                setDemandAction("accept")
+                                            }}
+                                        >
+                                            Accept
+                                        </Button>
+                                    </>
+                                )
+                                :
+                                (
+                                    <Box sx={{ display: 'flex' }}>
+                                        <CircularProgress />
+                                    </Box>
+                                )}
+
                         </DialogActions>
                     </Dialog>
                 </div>
             </StyledTableCell>
+            <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleSnackBarClose}>
+                <Alert variant="filled" onClose={handleSnackBarClose} severity={messageSnack.severity} sx={{ width: '100%' }}>
+                    {messageSnack.message}
+                </Alert>
+            </Snackbar>
         </StyledTableRow>
     )
 }

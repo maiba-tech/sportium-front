@@ -41,7 +41,7 @@ import { useRouter } from 'next/router'
 import { getSession, useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { handleCertificatesChange, handleCVChange, sendCoachPendingData, sleep } from 'src/handlers/CoachFormHandlers'
-import { Alert, AlertTitle, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Modal } from '@mui/material'
+import { Alert, AlertTitle, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Modal, Snackbar } from '@mui/material'
 import { inputFields } from 'src/register-data/RegisterData'
 import CircularIndeterminate from 'src/@core/components/sportium-comp/CircularIndeterminate'
 import { redirect } from 'next/dist/server/api-utils'
@@ -132,13 +132,22 @@ const RegisterPage = (props) => {
 
   const [openSpinner, setOpenSpinner] = useState(false);
 
+  const [messageSnack, setMessageSnack] = useState({
+    message: "", 
+    severity: ""
+  })
+
   const [open, setOpen] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false); 
+
 
   const isNotApproved = useRef(true)
 
   const [certificates, setCertificates] = useState([]);
   const [cv, setCv] = useState(null);
   const router = useRouter()
+
+
 
   // ** Handlers
 
@@ -164,12 +173,17 @@ const RegisterPage = (props) => {
       data.certificates = certificates
       data.cv = cv
 
-      console.log(data)
-
       sendData(data)
-
     }
   }
+
+  const handleSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  };
 
   // ** Hook
   const theme = useTheme()
@@ -206,14 +220,14 @@ const RegisterPage = (props) => {
         certificates: data.certificates
       })
       .then(response => {
-
         setOpenSpinner(false)
         router.push('/pages/login/')
-        console.log(response)
+        
       })
       .catch(err => {
-        // TODO: error handling Important 
-        console.log(err)
+        setOpenSpinner(false); 
+        setMessageSnack({message: "Error calling server for saving the demand", severity: "error"})
+        setOpenSnackBar(true); 
       })
 
   }
@@ -295,6 +309,7 @@ const RegisterPage = (props) => {
               inputFields.map((input_field) => (
                 <>
                   <label>{input_field.bigLabel ? input_field.bigLabel : ""}</label>
+                  <label> *</label>
                   <TextField
                     fullWidth={input_field.fullWidth}
                     type={input_field.type}
@@ -326,7 +341,7 @@ const RegisterPage = (props) => {
             </FormControl>
 
             <FormControl fullWidth sx={{ marginBottom: 4 }}>
-              <label>Password</label>
+              <label>Password *</label>
               <OutlinedInput
                 id='auth-register-password'
                 type={values.showPassword ? 'text' : 'password'}
@@ -350,7 +365,7 @@ const RegisterPage = (props) => {
               />
             </FormControl>
             <FormControl fullWidth sx={{ marginBottom: 4 }}>
-              <label>Password confiramtion</label>
+              <label>Password confiramtion *</label>
               <OutlinedInput
                 id='Password2'
                 type={values.showPassword2 ? 'text' : 'password'}
