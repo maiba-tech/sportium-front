@@ -101,7 +101,7 @@ export async function getServerSideProps(context) {
     }
 
     // fetch all pending demands 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/Admin`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/Admin/pending`)
     const body = await res.json()
     if (res.status === 200) {
         return {
