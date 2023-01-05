@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 
-import SingleTableDialog from '../demands/SingleTableDialog'
+import SingleTableDialog from './SingleTableDialog'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -20,7 +20,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const TableFields = ["Avatar", "Coach name", "Demand state", "Curriculum Vitae", "Coach email", "Details"]
+const TableFields = ["Avatar", "Coach name", "Curriculum Vitae", "Coach email", "Details", "Accept"]
 
 const DemandsTableCustomized = (props) => {
 
