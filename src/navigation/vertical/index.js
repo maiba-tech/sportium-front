@@ -9,9 +9,21 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import { Calendar } from 'mdi-material-ui'
 
 const navigation = () => {
   return [
+    {
+      sectionTitle: 'Admin'
+    }, 
+    {
+      title: 'Demands',
+      icon: FormatLetterCase,
+      path: '/demands'
+    },
+    {
+      sectionTitle: 'Athlete'
+    }, 
     {
       title: 'Dashboard',
       icon: HomeOutline,
@@ -23,18 +35,13 @@ const navigation = () => {
       path: '/account-settings'
     },
     {
-      title: 'Demands',
-      icon: FormatLetterCase,
-      path: '/demands'
-    },
+      sectionTitle: 'Coach'
+    }, 
     {
-      sectionTitle: 'Pages'
-    },
-    {
-      title: 'Typography',
-      icon: FormatLetterCase,
-      path: '/typography'
-    }
+      title: 'Programs',
+      icon: Calendar,
+      path: '/programs'
+    }, 
 
     // {
     //   title: 'Login',
