@@ -1,15 +1,14 @@
 
 import TableRow from '@mui/material/TableRow'
 import { styled } from '@mui/material/styles'
-import { Alert, Avatar, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Link, Snackbar, TextField } from '@mui/material'
+import { Alert, Avatar, Box, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Link, Snackbar, TextField } from '@mui/material'
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import { Box } from '@mui/system'
+
 
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useRef, useState } from 'react'
-import { TabContext, TabPanel } from '@mui/lab'
 import TabDemand from '../demands/TabDemand'
 import axios from 'axios'
 import { Router, useRouter } from 'next/router'
@@ -42,7 +41,7 @@ const SingleTableDialog = (props) => {
     /**States */
     const [open, setOpen] = useState(false);
     const [updateDemand, setUpdateDemand] = useState(false)
-    const router = useRouter(); 
+    const router = useRouter();
 
     const [messageSnack, setMessageSnack] = useState({
         message: "",
@@ -88,11 +87,10 @@ const SingleTableDialog = (props) => {
     };
 
     useEffect(() => {
-        if(isActionFirstRender.current)
-        {
-            isActionFirstRender.current = false; 
-            
-return 
+        if (isActionFirstRender.current) {
+            isActionFirstRender.current = false;
+
+            return
         }
         handleDemand()
     }, [demandAction])
@@ -141,12 +139,7 @@ return
             <StyledTableCell align='right'>
                 <Box sx={{ '& button': { m: 1 } }}>
                     <div>
-                        {/* <IconButton color="success" aria-label="accept demand" component="label">
-                            <DoneIcon />
-                        </IconButton>
-                        <IconButton color="error" aria-label="deny demand" component="label">
-                            <DeleteIcon />
-                        </IconButton> */}
+
                         <Alert severity='warning'>Open details</Alert>
                     </div>
                 </Box>
@@ -155,27 +148,25 @@ return
                         <DialogTitle>Demand details</DialogTitle>
                         <DialogContent>
                             <Card>
-                                <TabContext value='demand'>
-                                    <TabPanel sx={{ p: 0 }} value='demand'>
-                                        <TabDemand
-                                            id={props.row.coachPending.id}
 
-                                            // image={row.demand.user.image}
-                                            firstName={props.row.coachPending.firstName}
-                                            lastName={props.row.coachPending.lastName}
-                                            email={props.row.coachPending.email}
-                                            weight={props.row.coachPending.weight}
-                                            height={props.row.coachPending.height}
+                                <TabDemand
+                                    id={props.row.coachPending.id}
 
-                                            // role={row.demand.roles[0].name}
-                                            gender={(props.row.coachPending.gender == 'M' || props.row.coachPending.gender == 'm') ? 'Male' : 'Female'}
-                                            state={props.row.requestStateUpdates.stateName}
-                                            certificates={props.row.certificates}
-                                            cv={props.row.cvUrl}
-                                            type={props.row.type}
-                                        />
-                                    </TabPanel>
-                                </TabContext>
+                                    // image={row.demand.user.image}
+                                    firstName={props.row.coachPending.firstName}
+                                    lastName={props.row.coachPending.lastName}
+                                    email={props.row.coachPending.email}
+                                    weight={props.row.coachPending.weight}
+                                    height={props.row.coachPending.height}
+
+                                    // role={row.demand.roles[0].name}
+                                    gender={(props.row.coachPending.gender == 'M' || props.row.coachPending.gender == 'm') ? 'Male' : 'Female'}
+                                    state={props.row.requestStateUpdates.stateName}
+                                    certificates={props.row.certificates}
+                                    cv={props.row.cvUrl}
+                                    type={props.row.type}
+                                />
+
                             </Card>
                         </DialogContent>
 

@@ -1,10 +1,9 @@
-import { TextareaAutosize } from '@mui/base'
+
 import { Button, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, InputLabel, Stack, TextField, Typography } from '@mui/material'
 import Card from '@mui/material/Card'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { getAllPrograms, storeProgram } from 'src/handlers/local-storage/LocalStorageApi'
-import { CustomInput } from './CustomInput'
 
 
 const ProgramForm = (props) => {
@@ -41,7 +40,7 @@ const ProgramForm = (props) => {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <Stack direction="column" spacing={2}>
                                 <InputLabel id="program-name-s">Program name</InputLabel>
-                                <CustomInput
+                                <TextField
                                     {...register("program_name", { required: true })}
                                     aria-invalid={errors.program_name ? "true" : "false"}
                                     id="outlined-error"
@@ -52,7 +51,7 @@ const ProgramForm = (props) => {
                                 <Divider />
                                 
                                 <InputLabel id="program-description-s">Program description</InputLabel>
-                                <CustomInput
+                                <TextField
                                     aria-label="Description"
                                     multiline
                                     placeholder="Type something…"

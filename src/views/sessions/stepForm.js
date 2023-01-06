@@ -1,10 +1,9 @@
-import { TextareaAutosize } from '@mui/base'
+
 import { Button, CardContent, Dialog, Select, MenuItem, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, InputLabel, Stack, TextField, Typography, Snackbar, Alert, Modal } from '@mui/material'
 import Card from '@mui/material/Card'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { getAllPrograms, storeProgram } from 'src/handlers/local-storage/LocalStorageApi'
-import { CustomInput } from '../programs/CustomInput'
 
 
 const step_types = {

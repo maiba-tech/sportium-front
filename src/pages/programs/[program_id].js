@@ -4,10 +4,7 @@ import { Button, Card, Divider, Grid, Stack } from '@mui/material';
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { CustomInput } from 'src/views/programs/CustomInput';
-
 import AlarmIcon from '@mui/icons-material/Alarm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StepForm from 'src/views/sessions/stepForm';
