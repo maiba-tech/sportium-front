@@ -51,9 +51,9 @@ const ProgramsPage = (props) => {
 
     const [programs, setPrograms] = useState(null);
 
-    // useEffect(() => {
-    //     setPrograms(getAllPrograms())
-    // }, [])
+    useEffect(() => {
+        setPrograms(getAllPrograms())
+    }, [])
 
     const handleCategorieChange = (event) => {
         setNextCategorie(event.target.value)
