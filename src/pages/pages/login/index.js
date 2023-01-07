@@ -55,6 +55,7 @@ export async function getServerSideProps(context) {
           }
       }
   }
+  
   return {
       props: {
           session: session
@@ -139,7 +140,7 @@ const LoginPage = () => {
 
       handleOpen()
     } else {
-      
+
       // send data
       const res = await signIn('credentials', {
         email: values.email,
