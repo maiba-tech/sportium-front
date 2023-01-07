@@ -41,6 +41,25 @@ import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import axios from 'axios'
 import { signIn, useSession } from 'next-auth/react'
 import { Alert, AlertTitle, Modal } from '@mui/material'
+import { getSession } from 'next-auth/react'
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  // if the user is already logged in
+  if (session) {
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false
+          }
+      }
+  }
+  return {
+      props: {
+          session: session
+      }
+  }
+}
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
