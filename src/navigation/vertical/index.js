@@ -14,64 +14,73 @@ import { Calendar } from 'mdi-material-ui'
 
 const navigation = (session) => {
   var verticalNavigationItems
-  const roles = session.user.roles
-  if(roles){
-    if(roles.some(e => e.name === 'ADMIN')){
-      verticalNavigationItems = [
-        {
-          sectionTitle: 'Admin'
-        }, 
-        {
-          title: 'Demands',
-          icon: FormatLetterCase,
-          path: '/demands'
-        },
-        {
-          title: 'Account Settings',
-          icon: AccountCogOutline,
-          path: '/account-settings'
-        },
-      ]
-    } else if(roles.some(e => e.name === 'COACH')){
-      verticalNavigationItems = [
-        {
-          sectionTitle: 'Athlete'
-        }, 
-        {
-          title: 'Dashboard',
-          icon: HomeOutline,
-          path: '/'
-        },
-        {
-          title: 'Account Settings',
-          icon: AccountCogOutline,
-          path: '/account-settings'
-        },
-        {
-          sectionTitle: 'Coach'
-        }, 
-        {
-          title: 'Programs',
-          icon: Calendar,
-          path: '/programs'
-        },
-      ]
-    } else if(roles.some(e => e.name === 'ATHLETE') || roles.some(e => e.name === 'COACH_PENDING')){
-      verticalNavigationItems = [
-        {
-          sectionTitle: 'Athlete'
-        }, 
-        {
-          title: 'Dashboard',
-          icon: HomeOutline,
-          path: '/'
-        },
-        {
-          title: 'Account Settings',
-          icon: AccountCogOutline,
-          path: '/account-settings'
-        },
-      ]
+  if(typeof(session) === 'undefined' || typeof(session.user) === 'undefined' || typeof(session.user.roles) === 'undefined'){
+    verticalNavigationItems =  [
+      {
+        sectionTitle: 'Empty Section'
+      },
+    ]
+  }
+  else {
+    const roles = session.user.roles
+    if(roles){
+      if(roles.some(e => e.name === 'ADMIN')){
+        verticalNavigationItems = [
+          {
+            sectionTitle: 'Admin'
+          }, 
+          {
+            title: 'Demands',
+            icon: FormatLetterCase,
+            path: '/demands'
+          },
+          {
+            title: 'Account Settings',
+            icon: AccountCogOutline,
+            path: '/account-settings'
+          },
+        ]
+      } else if(roles.some(e => e.name === 'COACH')){
+        verticalNavigationItems = [
+          {
+            sectionTitle: 'Athlete'
+          }, 
+          {
+            title: 'Dashboard',
+            icon: HomeOutline,
+            path: '/'
+          },
+          {
+            title: 'Account Settings',
+            icon: AccountCogOutline,
+            path: '/account-settings'
+          },
+          {
+            sectionTitle: 'Coach'
+          }, 
+          {
+            title: 'Programs',
+            icon: Calendar,
+            path: '/programs'
+          },
+        ]
+      } else if(roles.some(e => e.name === 'ATHLETE') || roles.some(e => e.name === 'COACH_PENDING')){
+        verticalNavigationItems = [
+          {
+            sectionTitle: 'Athlete'
+          }, 
+          {
+            title: 'Dashboard',
+            icon: HomeOutline,
+            path: '/'
+          },
+          {
+            title: 'Account Settings',
+            icon: AccountCogOutline,
+            path: '/account-settings'
+          },
+        ]
+      }
     }
   }
   return verticalNavigationItems
