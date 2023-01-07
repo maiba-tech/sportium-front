@@ -45,6 +45,7 @@ import { getSession } from 'next-auth/react'
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
+
   // if the user is already logged in
   if (session) {
       return {
@@ -93,6 +94,7 @@ const style = {
 }
 
 const LoginPage = () => {
+
   // ** State
   const [values, setValues] = useState({
     password: '',
@@ -124,8 +126,10 @@ const LoginPage = () => {
   }
 
   const handleLogin = async () => {
+
     //RegEx verification before sending data to backend
     if (values.email.length === 0 || values.password.length === 0) {
+
       // console.log({ error: "email or password are empty" })
 
       setLoginError({
@@ -135,6 +139,7 @@ const LoginPage = () => {
 
       handleOpen()
     } else {
+      
       // send data
       const res = await signIn('credentials', {
         email: values.email,
