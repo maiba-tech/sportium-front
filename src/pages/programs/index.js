@@ -94,7 +94,7 @@ const ProgramsPage = (props) => {
                         <Button
                             size="small"
                             variant="outlined"
-                            disabled={nextCategorie === null ? true : false}
+                            disabled={nextCategorie === null}
                             onClick={handleClickOpenProgramCreation}
                         >
                             add program
