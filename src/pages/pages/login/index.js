@@ -41,6 +41,27 @@ import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import axios from 'axios'
 import { signIn, useSession } from 'next-auth/react'
 import { Alert, AlertTitle, Modal } from '@mui/material'
+import { getSession } from 'next-auth/react'
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+
+  // if the user is already logged in
+  if (session) {
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false
+          }
+      }
+  }
+  
+  return {
+      props: {
+          session: session
+      }
+  }
+}
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -74,6 +95,7 @@ const style = {
 }
 
 const LoginPage = () => {
+
   // ** State
   const [values, setValues] = useState({
     password: '',
@@ -105,8 +127,10 @@ const LoginPage = () => {
   }
 
   const handleLogin = async () => {
+
     //RegEx verification before sending data to backend
     if (values.email.length === 0 || values.password.length === 0) {
+
       // console.log({ error: "email or password are empty" })
 
       setLoginError({
@@ -116,6 +140,7 @@ const LoginPage = () => {
 
       handleOpen()
     } else {
+
       // send data
       const res = await signIn('credentials', {
         email: values.email,

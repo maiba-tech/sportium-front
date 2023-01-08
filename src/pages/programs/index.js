@@ -7,7 +7,34 @@ import React, { useEffect, useState } from 'react'
 import ProgramsTableCustomized from 'src/views/programs/ProgramsTableCustomized'
 import ProgramForm from 'src/views/programs/ProgramForm';
 import { getAllPrograms } from 'src/handlers/local-storage/LocalStorageApi';
+import { getSession } from 'next-auth/react';
 
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/pages/login',
+                permanent: false
+            }
+        }
+    }
+    else if(!session.user.roles.some(e => e.name === 'COACH')){
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: {
+            session: session
+        }
+    }
+}
 
 
 const categories = [

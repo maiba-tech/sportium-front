@@ -15,11 +15,12 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useEffect } from 'react'
 
 const UserLayout = ({ children }) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
-
+  
   /**
    *  The below variable will hide the current layout menu at given screen size.
    *  The menu will be accessible from the Hamburger icon only (Vertical Overlay Menu).
@@ -49,7 +50,7 @@ const UserLayout = ({ children }) => {
       hidden={hidden}
       settings={settings}
       saveSettings={saveSettings}
-      verticalNavItems={VerticalNavItems()} // Navigation Items
+      verticalNavItems={VerticalNavItems(children.props.session)} // Navigation Items
       verticalAppBarContent={(
         props // AppBar Content
       ) => (
