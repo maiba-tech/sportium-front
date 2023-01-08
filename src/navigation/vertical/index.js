@@ -10,6 +10,7 @@ import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import { Calendar } from 'mdi-material-ui'
+import { Roofing } from '@mui/icons-material'
 
 
 const navigation = (session) => {
@@ -39,6 +40,11 @@ const navigation = (session) => {
             icon: AccountCogOutline,
             path: '/account-settings'
           },
+          {
+            title: 'Home page',
+            icon: Roofing,
+            path: '/homepage'
+          },
         ]
       } else if(roles.some(e => e.name === 'COACH')){
         verticalNavigationItems = [
@@ -63,6 +69,11 @@ const navigation = (session) => {
             icon: Calendar,
             path: '/programs'
           },
+          {
+            title: 'Home page',
+            icon: Roofing,
+            path: '/homepage'
+          },
         ]
       } else if(roles.some(e => e.name === 'ATHLETE') || roles.some(e => e.name === 'COACH_PENDING')){
         verticalNavigationItems = [
@@ -79,6 +90,11 @@ const navigation = (session) => {
             icon: AccountCogOutline,
             path: '/account-settings'
           },
+          {
+            title: 'Home page',
+            icon: Roofing,
+            path: '/homepage'
+          },
         ]
       }
     }
@@ -86,82 +102,6 @@ const navigation = (session) => {
   
 return verticalNavigationItems
 
-  // return [
-  //   {
-  //     sectionTitle: 'Admin'
-  //   }, 
-  //   {
-  //     title: 'Demands',
-  //     icon: FormatLetterCase,
-  //     path: '/demands'
-  //   },
-  //   {
-  //     sectionTitle: 'Athlete'
-  //   }, 
-  //   {
-  //     title: 'Dashboard',
-  //     icon: HomeOutline,
-  //     path: '/'
-  //   },
-  //   {
-  //     title: 'Account Settings',
-  //     icon: AccountCogOutline,
-  //     path: '/account-settings'
-  //   },
-  //   {
-  //     sectionTitle: 'Coach'
-  //   }, 
-  //   {
-  //     title: 'Programs',
-  //     icon: Calendar,
-  //     path: '/programs'
-  //   }, 
-  // ]
-// --------------------------------------------------------------
-    // {
-    //   title: 'Login',
-    //   icon: Login,
-    //   path: '/pages/login',
-    //   openInNewTab: true
-    // },
-    // {
-    //   title: 'Register',
-    //   icon: AccountPlusOutline,
-    //   path: '/pages/register',
-    //   openInNewTab: true
-    // },
-    // {
-    //   title: 'Error',
-    //   icon: AlertCircleOutline,
-    //   path: '/pages/error',
-    //   openInNewTab: true
-    // },
-    // {
-    //   sectionTitle: 'User Interface'
-    // },
-    
-
-    // {
-    //   title: 'Icons',
-    //   path: '/icons',
-    //   icon: GoogleCirclesExtended
-    // },
-    // {
-    //   title: 'Cards',
-    //   icon: CreditCardOutline,
-    //   path: '/cards'
-    // },
-    // {
-    //   title: 'Tables',
-    //   icon: Table,
-    //   path: '/tables'
-    // },
-    // {
-    //   icon: CubeOutline,
-    //   title: 'Form Layouts',
-    //   path: '/form-layouts'
-    // }
-  //]
 }
 
 export default navigation
