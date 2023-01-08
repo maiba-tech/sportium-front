@@ -44,7 +44,6 @@ const ProgramForm = (props) => {
                                     {...register("program_name", { required: true })}
                                     aria-invalid={errors.program_name ? "true" : "false"}
                                     id="outlined-error"
-                                    label="Error"
                                 />
                                 {errors.program_name?.type === 'required' && <Typography color={'red'}>Program name is required</Typography>}
                                 

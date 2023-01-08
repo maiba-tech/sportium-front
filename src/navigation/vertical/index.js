@@ -83,7 +83,9 @@ const navigation = (session) => {
       }
     }
   }
-  return verticalNavigationItems
+  
+return verticalNavigationItems
+
   // return [
   //   {
   //     sectionTitle: 'Admin'

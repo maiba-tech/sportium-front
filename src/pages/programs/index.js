@@ -29,20 +29,17 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/`)
+    const body = await res.json(); 
+
+    
     return {
         props: {
+            data: body,
             session: session
         }
     }
 }
-
-
-const categories = [
-    'Run',
-    'Swim',
-    'Cycle'
-]
-
 
 const ProgramsPage = (props) => {
 
@@ -89,8 +86,8 @@ const ProgramsPage = (props) => {
                             label="Categorie"
                             onChange={handleCategorieChange}
                         >
-                            {categories.map((categorie, index) => (
-                                <MenuItem key={index} value={categorie}>{categorie}</MenuItem>
+                            {props.data.map((categorie, index) => (
+                                <MenuItem key={index} value={categorie.name}>{categorie.name}</MenuItem>
                             ))}
 
                         </Select>
