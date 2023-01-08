@@ -54,7 +54,7 @@ export const inputFields = [
     id: "height",
     placeholder: 'Height',
     sx: { marginBottom: 4 },
-    label: 'height',
+    label: 'height in meters (ex: 1.67)',
     registerOptions: {required: true, min: 1, max: 2.50}
  },
   {
@@ -63,7 +63,7 @@ export const inputFields = [
     id: "weight",
     placeholder: 'Weight',
     sx: { marginBottom: 4 },
-    label: 'weight',
+    label: 'weight in KG (ex: 67)',
     registerOptions: {required: true, min: 20, max: 120}
   },
   {
@@ -72,7 +72,8 @@ export const inputFields = [
     type: 'file',
     id: 'cv',
     placeholder: 'Add Your CV',
-    sx:{ marginBottom: 4 }
+    sx:{ marginBottom: 4 },
+    registerOptions: {required: true}
   },
 
   {
@@ -82,6 +83,7 @@ export const inputFields = [
     id: 'certificates',
     placeholder: 'Add Certificates',
     inputProps: { multiple: true },
-    sx: { marginBottom: 4 }
+    sx: { marginBottom: 4 },
+    registerOptions: {required: true}
   }
 ]

@@ -61,7 +61,7 @@ export async function getServerSideProps(context) {
 
   // if there is some thing important from server before accessing the register page 
   return {
-    props : {
+    props: {
       title: "Coach register form"
     }
   }
@@ -133,12 +133,12 @@ const RegisterPage = (props) => {
   const [openSpinner, setOpenSpinner] = useState(false);
 
   const [messageSnack, setMessageSnack] = useState({
-    message: "", 
+    message: "",
     severity: ""
   })
 
   const [open, setOpen] = useState(false);
-  const [openSnackBar, setOpenSnackBar] = useState(false); 
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
 
   const isNotApproved = useRef(true)
@@ -222,12 +222,12 @@ const RegisterPage = (props) => {
       .then(response => {
         setOpenSpinner(false)
         router.push('/pages/login/')
-        
+
       })
       .catch(err => {
-        setOpenSpinner(false); 
-        setMessageSnack({message: "Error calling server for saving the demand", severity: "error"})
-        setOpenSnackBar(true); 
+        setOpenSpinner(false);
+        setMessageSnack({ message: "Error calling server for saving the demand", severity: "error" })
+        setOpenSnackBar(true);
       })
 
   }
@@ -320,6 +320,12 @@ const RegisterPage = (props) => {
                     {...register(input_field.id, input_field.registerOptions)}
                     inputProps={input_field.inputProps ? input_field.inputProps : ""}
                   />
+                  {errors[input_field.id]?.type === 'required' && <Typography color={'red'}>
+                    {input_field.id} is required
+                  </Typography>}
+                  {errors[input_field.id]?.type === 'pattern' && <Typography color={'red'}>
+                    {input_field.id} needs to respect the pattern
+                  </Typography>}
                 </>
               ))
             }
@@ -339,6 +345,9 @@ const RegisterPage = (props) => {
                 <MenuItem value='M'>Male</MenuItem>
               </Select>
             </FormControl>
+            {errors['gender']?.type === 'required' && <Typography color={'red'}>
+              gender is required
+            </Typography>}
 
             <FormControl fullWidth sx={{ marginBottom: 4 }}>
               <label>Password *</label>
@@ -363,6 +372,9 @@ const RegisterPage = (props) => {
                   </InputAdornment>
                 }
               />
+              {errors['password']?.type === 'required' && <Typography color={'red'}>
+                password is required
+              </Typography>}
             </FormControl>
             <FormControl fullWidth sx={{ marginBottom: 4 }}>
               <label>Password confiramtion *</label>
@@ -379,6 +391,7 @@ const RegisterPage = (props) => {
                   }
                 })}
 
+
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton
@@ -392,6 +405,9 @@ const RegisterPage = (props) => {
                   </InputAdornment>
                 }
               />
+              {errors['cpassword']?.type === 'validate' && <Typography color={'red'}>
+                passwords are not identical
+              </Typography>}
               <p id='confirmation' value={values.confirmation}></p>
             </FormControl>
 

@@ -7,15 +7,39 @@ import React, { useEffect, useState } from 'react'
 import ProgramsTableCustomized from 'src/views/programs/ProgramsTableCustomized'
 import ProgramForm from 'src/views/programs/ProgramForm';
 import { getAllPrograms } from 'src/handlers/local-storage/LocalStorageApi';
+import { getSession } from 'next-auth/react';
 
 
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/pages/login',
+                permanent: false
+            }
+        }
+    }
+    else if(!session.user.roles.some(e => e.name === 'COACH')){
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
 
-const categories = [
-    'Run',
-    'Swim',
-    'Cycle'
-]
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/`)
+    const body = await res.json(); 
 
+    
+    return {
+        props: {
+            data: body,
+            session: session
+        }
+    }
+}
 
 const ProgramsPage = (props) => {
 
@@ -62,8 +86,8 @@ const ProgramsPage = (props) => {
                             label="Categorie"
                             onChange={handleCategorieChange}
                         >
-                            {categories.map((categorie, index) => (
-                                <MenuItem key={index} value={categorie}>{categorie}</MenuItem>
+                            {props.data.map((categorie, index) => (
+                                <MenuItem key={index} value={categorie.name}>{categorie.name}</MenuItem>
                             ))}
 
                         </Select>

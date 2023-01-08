@@ -70,7 +70,6 @@ const StepForm = (props) => {
                                             id='step-select'
                                             label="Step type"
                                             {...register("type", { required: true })}
-                                            defaultValue="Warmup"
                                         >
                                             {
                                                 steps_types.map((type, index) => (

@@ -9,6 +9,7 @@ import AlarmIcon from '@mui/icons-material/Alarm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StepForm from 'src/views/sessions/stepForm';
 import { StepUI } from 'src/views/programs/StepUI';
+import { getSession } from 'next-auth/react';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,7 +21,36 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-const SessionsPage = () => {
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/pages/login',
+                permanent: false
+            }
+        }
+    }
+    else if (!session.user.roles.some(e => e.name === 'COACH')) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+
+    return {
+        props: {
+            session: session
+        }
+    }
+}
+
+
+
+const SessionsPage = (props) => {
 
     const router = useRouter();
     const { program_id } = router.query
@@ -35,10 +65,13 @@ const SessionsPage = () => {
         setOpenStepCreation(false)
     }
 
+    const handleNewSession = () => {
+        console.log(newSteps)
+    }
+
     // when adding new steps we can manage here the added steps 
     const [newSteps, setNewSteps] = useState([])
 
-    // each step needs to have a button for deletion from the steps table 
 
     return (
         <>
@@ -53,12 +86,13 @@ const SessionsPage = () => {
                                 <Stack direction={'column'} spacing={2}>
                                     {
                                         newSteps.map((step, index) => (
-
                                             <StepUI
                                                 key={index}
+                                                newSteps={newSteps}
+                                                setNewSteps={setNewSteps}
+                                                index={index}
                                                 step={step}
                                             />
-
                                         ))
                                     }
                                 </Stack>
@@ -75,6 +109,7 @@ const SessionsPage = () => {
                                     variant='contained'
                                     size='small'
                                     color='success'
+                                    onClick={() => handleNewSession()}
 
                                 >
                                     Save session
@@ -100,7 +135,7 @@ const SessionsPage = () => {
                                 size='small'
                                 color='secondary'
                                 startIcon={<DeleteIcon />}
-                                disabled={newSteps.legth === 0 ? 'true' : 'false'}
+                                disabled={newSteps.length === 0 ? true : false}
                             >
                                 cancel
                             </Button>
