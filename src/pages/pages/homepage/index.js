@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles({
   root: {
@@ -24,19 +29,35 @@ const useStyles = makeStyles({
   },
 });
 
-const ProgramCard = ({ program }) => {
+const ProgramCard = ({program}) => {
   const classes = useStyles();
   const [isJoined, setIsJoined] = useState(false);
+  const [openRequest, setOpenRequest] = useState(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const handleJoin = () => {
-    // Rejoindre le programme ici
+    setOpenRequest(true);
+  };
+
+  const handleSendRequest = () => {
+// Envoyer la demande de participation ici
     setIsJoined(true);
+    setOpenRequest(false);
+    setOpenConfirmation(true);
+  };
+
+  const handleCloseRequest = () => {
+    setOpenRequest(false);
+  };
+
+  const handleCloseConfirmation = () => {
+    setOpenConfirmation(false);
   };
 
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Avatar src={program.coach.photo} alt={program.coach.name} width={60} height={60} />
+        <Avatar src={program.coach.photo} alt={program.coach.name} width={60} height={60}/>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           Coach: {program.coach.name}
         </Typography>
@@ -61,6 +82,47 @@ const ProgramCard = ({ program }) => {
           </Button>
         )}
       </CardActions>
+      <Dialog
+        open={openRequest}
+        onClose={handleCloseRequest}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Demande de participation"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Voulez-vous vraiment envoyer une demande de participation au programme "{program.name}" au
+            coach {program.coach.name}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRequest} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleSendRequest} color="primary" autoFocus>
+            Envoyer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openConfirmation}
+        onClose={handleCloseConfirmation}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Demande de participation envoyée"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Votre demande de participation au programme "{program.name}" a été envoyée au coach {program.coach.name}.
+            Vous recevrez une réponse dans les prochains jours.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmation} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
@@ -86,14 +148,28 @@ const ProgramList = () => {
       "id": 3,
       "coach": {"name": "Jane Doe", "photo": "https://www.google.com/images/jane-doe.jpg"},
       "name": "Programme de yoga pour la relaxation",
-      "description": "Ce",
-      "athleteCount": 15
+      "description": "Ce programme de yoga vous aidera à vous détendre et à vous relaxer grâce à une série de poses de yoga et de techniques de respiration. Il inclut également des conseils de nutrition pour soutenir votre pratique de yoga.",
+      "athleteCount": 10
+    },
+    {
+      "id": 4,
+      "coach": {"name": "John Smith", "photo": "https://www.google.com/images/john-smith.jpg"},
+      "name": "Programme de musculation pour débutants",
+      "description": "Ce programme de musculation est idéal pour les débutants qui souhaitent développer leur force et leur endurance musculaire. Il comprend des exercices de base de musculation et un plan de nutrition adapté aux besoins des débutants.",
+      "athleteCount": 20
+    },
+    {
+      "id": 5,
+      "coach": {"name": "John Smith", "photo": "https://www.google.com/images/john-smith.jpg"},
+      "name": "Programme de fitness en circuit",
+      "description": "Ce programme de fitness en circuit vous permettra de travailler tout votre corps grâce à une série d'exercices de haute intensité. Il comprend également un plan de nutrition pour vous aider à atteindre vos objectifs de forme physique.",
+      "athleteCount": 25
     }]
 
-      return (
+  return (
     <div>
       {programs.map((program) => (
-        <ProgramCard key={program.id} program={program} />
+        <ProgramCard key={program.id} program={program}/>
       ))}
     </div>
   );
