@@ -45,8 +45,8 @@ const ProgramsTableCustomized = (props) => {
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
             <TableRow>
-              {TableFields.map(cell => (
-                <StyledTableCell align='center'>{cell}</StyledTableCell>
+              {TableFields.map((cell, index) => (
+                <StyledTableCell key={index} align='center'>{cell}</StyledTableCell>
               ))}
             </TableRow>
           </TableHead>

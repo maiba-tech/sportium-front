@@ -73,7 +73,7 @@ const StepForm = (props) => {
                                         >
                                             {
                                                 steps_types.map((type, index) => (
-                                                    <MenuItem value={type}>{type}</MenuItem>
+                                                    <MenuItem key={index} value={type}>{type}</MenuItem>
                                                 ))
                                             }
 
