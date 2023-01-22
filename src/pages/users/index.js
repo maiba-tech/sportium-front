@@ -14,9 +14,6 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import { getSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-// import { unstable_getServerSession } from 'next-auth'
-// import { authOptions } from './api/auth/[...nextauth]'
-
 
 //
 export async function getServerSideProps(context) {
@@ -35,20 +32,7 @@ export async function getServerSideProps(context) {
 }
 
 
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       session: await unstable_getServerSession(
-//         context.req,
-//         context.res,
-//         authOptions
-//       ),
-//     },
-//   }
-// }
-
 const Dashboard = () => {
-
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
 
@@ -63,17 +47,11 @@ const Dashboard = () => {
         //console.log(data[0])
       })
   }, [])
-
-
   if (isLoading) return <p>Loading...</p>
-
-
   if (!data) return <p>No profile data</p>
 
   return (
-
-    // <ApexChartWrapper>
-    <>
+    <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
@@ -82,17 +60,18 @@ const Dashboard = () => {
                 <CardStatisticsVerticalComponent
                   stats={namelist.firstName}
                   icon={namelist.image_url}
-                  title={namelist.roles.map(role => { return role['name'] }).join("\r\n")}
+                  title={namelist.roles.map(role => {return role['name']}).join("\r\n")}
                 />
               </Grid>
             ))}
           </Grid>{' '}
         </Grid>{' '}
       </Grid>{' '}
-    </>
-
-    // </ApexChartWrapper>
+    </ApexChartWrapper>
   )
 }
+
+// Error500.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
 
 export default Dashboard
