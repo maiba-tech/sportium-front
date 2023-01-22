@@ -17,7 +17,11 @@ const CardStatsVertical = props => {
     <Card>
       <CardContent>
         <Box sx={{ display: 'flex', marginBottom: 5.5, alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <img src={icon} alt="" />
+          <img 
+            src={icon} 
+            alt="" 
+            
+          />
          </Box>
         <Typography sx={{ fontWeight: 100, fontSize: '0.775rem' }}> Role : {title}</Typography>
         <Box sx={{ marginTop: 1.5, display: 'flex', flexWrap: 'wrap', marginBottom: 1.5, alignItems: 'flex-start' }}>

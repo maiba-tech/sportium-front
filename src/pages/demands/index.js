@@ -5,7 +5,9 @@ import DemandsTableCustomized from 'src/views/demands/DemandsTableCustomized'
 
 
 export async function getServerSideProps(context) {
+
     const session = await getSession(context)
+
     if (!session) {
         return {
             redirect: {
@@ -14,7 +16,8 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    else if(!session.user.roles.some(e => e.name === 'ADMIN')){
+
+    else if (!session.user.roles.some(e => e.name === 'ADMIN')) {
         return {
             redirect: {
                 destination: '/',
@@ -45,9 +48,10 @@ export async function getServerSideProps(context) {
 // component
 const DemandPage = (props) => {
 
+    // const [demands ]
 
-    if(props.error)
-    {
+
+    if (props.error) {
         return (
             <Alert severity="error">Error while getting data</Alert>
         )

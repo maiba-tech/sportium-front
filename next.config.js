@@ -1,6 +1,16 @@
 const path = require('path')
 
 module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.dicebear.com',
+        port: '',
+        pathname: '/**',
+      },
+    ]
+  },
   trailingSlash: true,
   reactStrictMode: false,
   experimental: {
