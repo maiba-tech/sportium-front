@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   else if (!session.user.roles.some(e => e.name === 'COACH')) {
     return {
       redirect: {
-        destination: '/',
+        destination: '/pages/accueil',
         permanent: false
       }
     }
