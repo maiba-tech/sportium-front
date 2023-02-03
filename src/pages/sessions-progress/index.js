@@ -36,28 +36,29 @@ const SessionsProgress=(props)=>{
   const [todoList,setTodoList]=useState([]);
   const [doingList,setDoingList]=useState([]);
   const [doneList,setDoneList]=useState([]);
-  const [allSessions,setAllSessions]=useState([{name:"TO DO",items:[]},{name:"DOING",items:[]},{name:"DONE",items:[]}]);
+  const [allSessions,setAllSessions]=useState([{name:"TO DO",items:[]},{name:"IN PROGRESS",items:[]},{name:"DONE",items:[]}]);
   const [ready, setReady] = useState(true);
   const [boardData, setBoardData] = useState(BoardData);
+  const [isLoading,setLoading]=useState(true);
   const [sessionsData,setSessionsData]=useState(SessionsData);
   const [showForm, setShowForm] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(0);
-  sessionsData.forEach((s)=>{
-    let state=s.stateSessionAthlete.name;
-    if(state=='TODO'){
-      allSessions.at(0).items.push(s);
-
-    }
-    else if(state=='DOING') allSessions.at(1).items.push(s);
-    else allSessions.at(2).items.push(s);
-  });
-  useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${props.session.user.id}/currentSessions`).
+  useEffect(async () => {
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${props.session.user.id}/currentSessions`).
     then(data=>{
-      console.log(data)
+      console.log(data.data)
+      data.data.forEach(d=>{
+        let state=d.stateSessionAthlete.name;
+        if(state=='TODO')
+          allSessions.at(0).items.push(d);
+        else if(state=='INPROGRESS') allSessions.at(1).items.push(d);
+        else allSessions.at(2).items.push(d);
+      });
+      setLoading(false);
     }).catch(err=>{
       console.log(err)
     });
+    console.log(allSessions)
     if (process.browser) {
       setReady(true);
     }
@@ -78,6 +79,19 @@ const SessionsProgress=(props)=>{
       dragItem
     );
     setAllSessions(newBoardData);
+    allSessions[0].items.forEach((i)=>{
+      i.stateSessionAthlete.id=1;
+      i.stateSessionAthlete.name="TODO";
+    });
+    allSessions[1].items.forEach((i)=>{
+      i.stateSessionAthlete.id=2;
+      i.stateSessionAthlete.name="IN PROGRESS";
+    });
+    allSessions[2].items.forEach((i)=>{
+      i.stateSessionAthlete.id=3;
+      i.stateSessionAthlete.name="DONE";
+    });
+    console.log(allSessions);
   };
 
   console.log(allSessions);
@@ -107,6 +121,8 @@ const SessionsProgress=(props)=>{
       }
     }
   }
+
+  if(isLoading) return <p>Is Loading...</p>
 
   return(
     <main className="pl-40 pt-16">
@@ -166,6 +182,7 @@ const SessionsProgress=(props)=>{
                 </div>
               </DragDropContext>
             )}
+            <button className='btn btn-primary'>save</button>
           </div>
         </div>
       </div>
