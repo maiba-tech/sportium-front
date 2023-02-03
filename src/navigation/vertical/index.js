@@ -29,7 +29,7 @@ const navigation = (session) => {
         verticalNavigationItems = [
           {
             sectionTitle: 'Admin'
-          }, 
+          },
           {
             title: 'Demands',
             icon: FormatLetterCase,
@@ -50,7 +50,7 @@ const navigation = (session) => {
         verticalNavigationItems = [
           {
             sectionTitle: 'Athlete'
-          }, 
+          },
           {
             title: 'Dashboard',
             icon: HomeOutline,
@@ -63,7 +63,7 @@ const navigation = (session) => {
           },
           {
             sectionTitle: 'Coach'
-          }, 
+          },
           {
             title: 'Programs',
             icon: Calendar,
@@ -79,7 +79,7 @@ const navigation = (session) => {
         verticalNavigationItems = [
           {
             sectionTitle: 'Athlete'
-          }, 
+          },
           {
             title: 'Dashboard',
             icon: HomeOutline,
@@ -95,11 +95,16 @@ const navigation = (session) => {
             icon: Roofing,
             path: '/homepage'
           },
+          {
+            title: 'Progress',
+            icon: Calendar,
+            path: '/sessions-progress'
+          },
         ]
       }
     }
   }
-  
+
 return verticalNavigationItems
 
 }
