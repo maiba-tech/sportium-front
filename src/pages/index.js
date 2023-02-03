@@ -14,8 +14,7 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import { getSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-// import { unstable_getServerSession } from 'next-auth'
-// import { authOptions } from './api/auth/[...nextauth]'
+
 
 
 //
@@ -25,7 +24,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: '/pages/login',
+        destination: '/pages/accueil',
         permanent: false
       }
     }
@@ -34,18 +33,6 @@ export async function getServerSideProps(context) {
   return { props: { session: session } }
 }
 
-
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       session: await unstable_getServerSession(
-//         context.req,
-//         context.res,
-//         authOptions
-//       ),
-//     },
-//   }
-// }
 
 const Dashboard = (props) => {
 
@@ -59,8 +46,6 @@ const Dashboard = (props) => {
       .then(data => {
         setData(data)
         setLoading(false)
-
-        //console.log(data[0])
       })
   }, [])
 

@@ -41,7 +41,7 @@ const SingleTableDialog = (props) => {
     /**States */
     const [open, setOpen] = useState(false);
     const [updateDemand, setUpdateDemand] = useState(false)
-    const router = useRouter();
+    
 
     const [messageSnack, setMessageSnack] = useState({
         message: "",
@@ -82,7 +82,7 @@ const SingleTableDialog = (props) => {
         setUpdateDemand(true)
         setOpen(false);
 
-        window.location.reload()
+        props.router.reload(window.location.pathname)
 
     };
 
