@@ -10,23 +10,23 @@ import TabContext from '@mui/lab/TabContext'
 import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
 
+
+import dynamic from 'next/dynamic'
+
 // ** Icons Imports
 import AccountOutline from 'mdi-material-ui/AccountOutline'
-import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
-import InformationOutline from 'mdi-material-ui/InformationOutline'
 
 // ** Demo Tabs Imports
-import TabInfo from 'src/views/account-settings/TabInfo'
-import TabAccount from 'src/views/account-settings/TabAccount'
-import TabSecurity from 'src/views/account-settings/TabSecurity'
+const TabAccount = dynamic(() => import('src/views/account-settings/TabAccount'), {
+  loading: () => 'Loading ... '
+})
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
-import axios from 'axios'
 
 // use session import
 import { getSession, useSession } from 'next-auth/react'
-import { Router, useRouter } from 'next/router'
+import {  useRouter } from 'next/router'
 
 const Tab = styled(MuiTab)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -103,24 +103,7 @@ const AccountSettings = props => {
               </Box>
             }
           />
-          {/* <Tab
-            value='security'
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <LockOpenOutline />
-                <TabName>Security</TabName>
-              </Box>
-            }
-          />
-          <Tab
-            value='info'
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <InformationOutline />
-                <TabName>Info</TabName>
-              </Box>
-            }
-          /> */}
+          
         </TabList>
 
         <TabPanel sx={{ p: 0 }} value='account'>
@@ -136,12 +119,7 @@ const AccountSettings = props => {
             gender={(props.data.gender=='M' || props.data.gender=='m' )? 'Male':'Female'}
           />
         </TabPanel>
-        {/* <TabPanel sx={{ p: 0 }} value='security'>
-          <TabSecurity />
-        </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='info'>
-          <TabInfo />
-        </TabPanel> */}
+        
       </TabContext>
     </Card>
   )

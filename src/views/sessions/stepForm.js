@@ -34,8 +34,8 @@ const StepForm = (props) => {
 
         const step = {
             type: data.type, 
-            duration: data.duration, 
-            repitition:data.repitition,
+            duration: "00:"+data.duration, 
+            repitition:parseInt(data.repitition),
             color: step_types[data.type]
         }
 

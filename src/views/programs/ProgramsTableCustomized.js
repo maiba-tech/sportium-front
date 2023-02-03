@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import { Link } from '@mui/material'
+import { useEffect } from 'react'
 
 
 
@@ -36,7 +37,9 @@ const TableFields = ["Num", "Program name", "Categorie", "Athletes count", "Add 
 
 const ProgramsTableCustomized = (props) => {
 
-
+  useEffect(() => {
+    console.log(props.programs)
+  })
 
 
   return (
@@ -57,11 +60,11 @@ const ProgramsTableCustomized = (props) => {
                   {row.name}
                 </StyledTableCell> */}
                 <StyledTableCell align='center'>{index + 1}</StyledTableCell>
-                <StyledTableCell align='center'>{row.program_name}</StyledTableCell>
+                <StyledTableCell align='center'>{row.name}</StyledTableCell>
                 <StyledTableCell align='center'>{row.program_category}</StyledTableCell>
                 <StyledTableCell align='center'>{row.athletes_count}</StyledTableCell>
                 <StyledTableCell align='center'>
-                  <Link href={`${row.program_id}`} underline = 'always'>
+                  <Link href={`${row.id}`} underline = 'always'>
                     go
                   </Link>
 

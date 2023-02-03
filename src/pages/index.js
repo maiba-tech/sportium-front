@@ -14,8 +14,7 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import { getSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 
-// import { unstable_getServerSession } from 'next-auth'
-// import { authOptions } from './api/auth/[...nextauth]'
+
 
 
 //
@@ -25,7 +24,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: '/pages/login',
+        destination: '/pages/accueil',
         permanent: false
       }
     }
@@ -35,19 +34,7 @@ export async function getServerSideProps(context) {
 }
 
 
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       session: await unstable_getServerSession(
-//         context.req,
-//         context.res,
-//         authOptions
-//       ),
-//     },
-//   }
-// }
-
-const Dashboard = () => {
+const Dashboard = (props) => {
 
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
@@ -59,8 +46,6 @@ const Dashboard = () => {
       .then(data => {
         setData(data)
         setLoading(false)
-
-        //console.log(data[0])
       })
   }, [])
 
@@ -72,8 +57,8 @@ const Dashboard = () => {
 
   return (
 
-    // <ApexChartWrapper>
-    <>
+    <ApexChartWrapper>
+
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
@@ -89,9 +74,9 @@ const Dashboard = () => {
           </Grid>{' '}
         </Grid>{' '}
       </Grid>{' '}
-    </>
 
-    // </ApexChartWrapper>
+
+    </ApexChartWrapper>
   )
 }
 

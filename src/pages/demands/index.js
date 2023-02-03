@@ -1,7 +1,14 @@
+
+import dynamic from 'next/dynamic'
 import { Alert, Card, CardHeader, Grid, Typography } from '@mui/material'
 import { getSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import DemandsTableCustomized from 'src/views/demands/DemandsTableCustomized'
+
+
+const DemandsTableCustomized = dynamic(() => import('src/views/demands/DemandsTableCustomized'), {
+    loading: () => 'Loading ... '
+})
 
 
 export async function getServerSideProps(context) {
@@ -49,13 +56,15 @@ export async function getServerSideProps(context) {
 const DemandPage = (props) => {
 
     // const [demands ]
-
+    const router = useRouter(); 
 
     if (props.error) {
         return (
             <Alert severity="error">Error while getting data</Alert>
         )
     }
+
+    
 
     return (
         <Grid container spacing={6}>
@@ -70,7 +79,7 @@ const DemandPage = (props) => {
                         (
                             <Card>
                                 <CardHeader title='Demands Table' titleTypographyProps={{ variant: 'h6' }} />
-                                <DemandsTableCustomized demands={props.data} />
+                                <DemandsTableCustomized router={router} demands={props.data} />
                             </Card>) :
                         (
                             <Alert severity="warning">There is no demands to show</Alert>

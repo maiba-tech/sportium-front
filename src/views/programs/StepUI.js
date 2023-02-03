@@ -1,21 +1,11 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import { Card } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 
-export const StepUI = (props) => {
+const StepUI = (props) => {
 
     return (
 
@@ -60,3 +50,5 @@ export const StepUI = (props) => {
         </AppBar>
     )
 }
+
+export default StepUI

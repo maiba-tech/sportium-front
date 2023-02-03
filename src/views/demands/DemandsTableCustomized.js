@@ -40,6 +40,7 @@ const DemandsTableCustomized = (props) => {
               <SingleTableDialog
                 key={index}
                 row={row}
+                router={props.router}
               />
             ))}
           </TableBody>
