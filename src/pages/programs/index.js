@@ -1,14 +1,21 @@
-
+import dynamic from 'next/dynamic'
 
 import { Alert, Button, Card, CardHeader, FormControl, Grid, InputLabel, Stack, Typography } from '@mui/material'
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useEffect, useState } from 'react'
-import ProgramsTableCustomized from 'src/views/programs/ProgramsTableCustomized'
-import ProgramForm from 'src/views/programs/ProgramForm';
 import { getAllPrograms } from 'src/handlers/local-storage/LocalStorageApi';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
+
+const ProgramsTableCustomized = dynamic(() => import('src/views/programs/ProgramsTableCustomized'), {
+    loading: () => 'Loading ... '
+})
+
+const ProgramForm = dynamic(() => import('src/views/programs/ProgramForm'), {
+    loading: () => 'Loading ... '
+})
 
 export async function getServerSideProps(context) {
     const session = await getSession(context)
@@ -20,7 +27,7 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    else if(!session.user.roles.some(e => e.name === 'COACH')){
+    else if (!session.user.roles.some(e => e.name === 'COACH')) {
         return {
             redirect: {
                 destination: '/',
@@ -30,12 +37,22 @@ export async function getServerSideProps(context) {
     }
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/`)
-    const body = await res.json(); 
+    const body = await res.json();
 
-    
+
+    const USER_ID = session.user?.id
+    console.log(USER_ID)
+
+    const programs_data = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/coach/${USER_ID}`)
+    const body_pr = await programs_data.json();
+
     return {
         props: {
-            data: body,
+
+            data: {
+                categories_fet: body,
+                programs_fet: body_pr
+            },
             session: session
         }
     }
@@ -45,12 +62,6 @@ const ProgramsPage = (props) => {
 
     const [nextCategorie, setNextCategorie] = useState(null);
     const [openProgramCreation, setOpenProgramCreation] = useState(false)
-
-    const [programs, setPrograms] = useState(null);
-
-    useEffect(() => {
-        setPrograms(getAllPrograms())
-    }, [])
 
     const handleCategorieChange = (event) => {
         setNextCategorie(event.target.value)
@@ -64,6 +75,11 @@ const ProgramsPage = (props) => {
     const handleCloseProgramCreation = () => {
         setOpenProgramCreation(false);
     };
+
+    const router = useRouter();
+
+
+
 
     return (
 
@@ -86,7 +102,7 @@ const ProgramsPage = (props) => {
                             label="Categorie"
                             onChange={handleCategorieChange}
                         >
-                            {props.data.map((categorie, index) => (
+                            {props.data.categories_fet.map((categorie, index) => (
                                 <MenuItem key={index} value={categorie.name}>{categorie.name}</MenuItem>
                             ))}
 
@@ -102,11 +118,11 @@ const ProgramsPage = (props) => {
                     </Stack>
                 </FormControl>
                 {
-                    (programs === null || programs?.programs === null) ? <Alert severity="warning">There is no programs, add one</Alert> :
+                    (props.data.programs_fet === null) ? <Alert severity="warning">There is no programs, add one</Alert> :
                         (
                             <Card>
-                                <CardHeader title='Demands Table' titleTypographyProps={{ variant: 'h6' }} />
-                                <ProgramsTableCustomized programs={programs.programs} />
+                                <CardHeader title='Programs Table' titleTypographyProps={{ variant: 'h6' }} />
+                                <ProgramsTableCustomized programs={props.data.programs_fet} />
                             </Card>
                         )
                 }
@@ -115,7 +131,8 @@ const ProgramsPage = (props) => {
             </Grid>
 
             <ProgramForm
-                setPrograms={setPrograms}
+                router={router}
+                creator={props.session.user?.id}
                 category={nextCategorie}
                 openProgramCreation={openProgramCreation}
                 handleCloseProgramCreation={handleCloseProgramCreation}

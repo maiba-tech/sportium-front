@@ -47,7 +47,7 @@ export async function getServerSideProps(context) {
 //   }
 // }
 
-const Dashboard = () => {
+const Dashboard = (props) => {
 
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
@@ -72,8 +72,8 @@ const Dashboard = () => {
 
   return (
 
-    // <ApexChartWrapper>
-    <>
+    <ApexChartWrapper>
+
       <Grid container spacing={6}>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
@@ -89,9 +89,9 @@ const Dashboard = () => {
           </Grid>{' '}
         </Grid>{' '}
       </Grid>{' '}
-    </>
 
-    // </ApexChartWrapper>
+
+    </ApexChartWrapper>
   )
 }
 

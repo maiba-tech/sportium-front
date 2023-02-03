@@ -1,15 +1,34 @@
+import dynamic from 'next/dynamic'
 
-
-import { Button, Card, Divider, Grid, Stack } from '@mui/material';
+import { Button, Card, Divider, Grid, InputLabel, Stack, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
+
 import { styled } from '@mui/material/styles';
+
+import { useForm } from 'react-hook-form'
+
 import Paper from '@mui/material/Paper';
+
 import AlarmIcon from '@mui/icons-material/Alarm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import StepForm from 'src/views/sessions/stepForm';
-import { StepUI } from 'src/views/programs/StepUI';
+
 import { getSession } from 'next-auth/react';
+import { createSession } from 'src/handlers/fetchers/ProgramGroupFetchers';
+
+
+import useSWRMutation from 'swr/mutation'
+
+
+
+
+const StepUI = dynamic(() => import('src/views/programs/StepUI'), {
+    loading: () => 'Loading ... '
+})
+
+const StepForm = dynamic(() => import('src/views/sessions/stepForm'), {
+    loading: () => 'Loading ... '
+})
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -52,10 +71,16 @@ export async function getServerSideProps(context) {
 
 const SessionsPage = (props) => {
 
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+
+
     const router = useRouter();
     const { program_id } = router.query
 
     const [openStepCreation, setOpenStepCreation] = useState(false);
+
+
+    const [newSession, setNewSession] = useState(null);
 
     const handleOpenStepCreation = () => {
         setOpenStepCreation(true)
@@ -65,13 +90,71 @@ const SessionsPage = (props) => {
         setOpenStepCreation(false)
     }
 
-    const handleNewSession = () => {
-        console.log(newSteps)
+    const onSubmit = async (data) => {
+        // console.log(newSteps)
+
+        /**
+         * session creation object object : 
+         * 
+         * {
+         *  group_id: 1, 
+         *  title: ".....", 
+         *  steps: [
+         *      {
+         *          color: "....",
+         *          type: "....", 
+         *          duration: "....", 
+         *          repitition: "...."
+         *      },
+         *      {
+         *          color: "....",
+         *          type: "....", 
+         *          duration: "....", 
+         *          repitition: "...."
+         *      },
+         *      {
+         *          color: "....",
+         *          type: "....", 
+         *          duration: "....", 
+         *          repitition: "...."
+         *      },
+         *      {
+         *          color: "....",
+         *          type: "....", 
+         *          duration: "....", 
+         *          repitition: "...."
+         *      }
+         *  ]
+         * 
+         * }
+         */
+
+        const sessionObject = {
+            group_id: parseInt(program_id),
+            title: data.session_title,
+            steps: newSteps
+        }
+
+
+        console.log(sessionObject)
+
+
+        try {
+            trigger(sessionObject)
+        } catch (err) {
+            console.log(err)
+        }
+
+
     }
 
     // when adding new steps we can manage here the added steps 
     const [newSteps, setNewSteps] = useState([])
 
+    const {
+        trigger,
+        isMutating
+    } = useSWRMutation('/sessions/create', createSession)
 
     return (
         <>
@@ -103,20 +186,31 @@ const SessionsPage = (props) => {
                 </Grid>
                 <Grid item xs={3}>
                     <Item>
-                        {
-                            newSteps.length === 0 ? <></> : (
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    color='success'
-                                    onClick={() => handleNewSession()}
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <InputLabel id="session-title">Session title</InputLabel>
+                            <TextField
+                                {...register("session_title", { required: true })}
+                                aria-invalid={errors.session_title ? "true" : "false"}
+                                id="outlined-error"
+                                item xs={3}
+                            />
+                            {errors.session_title?.type === 'required' && <Typography color={'red'}>Session title is required</Typography>}
 
-                                >
-                                    Save session
-                                </Button>
-                            )
-                        }
+                            {
+                                (newSteps.length === 0) ? <></> : (
+                                    <Button
+                                        disabled={isMutating}
+                                        variant='contained'
+                                        size='small'
+                                        color='success'
+                                        type='submit'
 
+                                    >
+                                        {isMutating ? 'Saving ...' : 'Save session'}
+                                    </Button>
+                                )
+                            }
+                        </form>
                         <Divider />
 
                         <Stack direction={'column'} spacing={1}>
