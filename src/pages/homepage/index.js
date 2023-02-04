@@ -240,6 +240,7 @@ const ProgramList = () => {
       setSelectedValue(event.target.value)
       filterAll(event.target.value,min,max)
     }
+
     const handleMinChange = (event) => {
       var newMin
       if(event.target.value === ''){
@@ -300,8 +301,8 @@ const ProgramList = () => {
               label="categorie"
               onChange={handleCategorieChange}
           >
-            {menuItems.map(option => (
-                <MenuItem value={option}>{option}</MenuItem>
+            {menuItems.map((option,index) => (
+                <MenuItem key={index} value={option}>{option}</MenuItem>
               ))}
           </Select>
           <TextField id='min-number' label="Min" type="Number" onChange={handleMinChange}/>
