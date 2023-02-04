@@ -61,7 +61,7 @@ const ProgramsTableCustomized = (props) => {
                 </StyledTableCell> */}
                 <StyledTableCell align='center'>{index + 1}</StyledTableCell>
                 <StyledTableCell align='center'>{row.name}</StyledTableCell>
-                <StyledTableCell align='center'>{row.program_category}</StyledTableCell>
+                <StyledTableCell align='center'>{row.category}</StyledTableCell>
                 <StyledTableCell align='center'>{row.athletes_count}</StyledTableCell>
                 <StyledTableCell align='center'>
                   <Link href={`${row.id}`} underline = 'always'>

@@ -7,18 +7,18 @@ import { getAllPrograms, storeProgram } from 'src/handlers/local-storage/LocalSt
 
 
 const step_types = {
-    Warmup: "#d63031", 
-    Run : "#2d3436", 
-    CoolDown : "#0984e3", 
-    Recover : "#fdcb6e", 
-    Rest : "#e84393"
+    Warmup: "#d63031",
+    Run: "#2d3436",
+    CoolDown: "#0984e3",
+    Recover: "#fdcb6e",
+    Rest: "#e84393"
 }
 
 const steps_types = [
-    "Warmup", 
-    "Run", 
-    "CoolDown", 
-    "Recover", 
+    "Warmup",
+    "Run",
+    "CoolDown",
+    "Recover",
     "Rest"
 ]
 
@@ -27,15 +27,15 @@ const StepForm = (props) => {
 
 
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
-    
+
     const onSubmit = (data) => {
 
         // test purposes we used local storage 
 
         const step = {
-            type: data.type, 
-            duration: "00:"+data.duration, 
-            repitition:parseInt(data.repitition),
+            type: data.type,
+            duration: "00:" + data.duration,
+            repetition: parseInt(data.repitition),
             color: step_types[data.type]
         }
 
@@ -48,7 +48,7 @@ const StepForm = (props) => {
         // storeProgram(programEntity); 
         // props.setPrograms(getAllPrograms())
         props.handleCloseStepCreation()
-        
+
 
         reset();
         console.log(step)

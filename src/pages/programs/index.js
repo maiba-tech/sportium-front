@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { getAllPrograms } from 'src/handlers/local-storage/LocalStorageApi';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import FullScreenDialog from 'src/views/sessions/SessionCard';
 
 
 const ProgramsTableCustomized = dynamic(() => import('src/views/programs/ProgramsTableCustomized'), {
@@ -78,6 +79,9 @@ const ProgramsPage = (props) => {
 
     const router = useRouter();
 
+   
+
+
 
 
 
@@ -137,6 +141,8 @@ const ProgramsPage = (props) => {
                 openProgramCreation={openProgramCreation}
                 handleCloseProgramCreation={handleCloseProgramCreation}
             />
+
+            
 
         </Grid>
     )
