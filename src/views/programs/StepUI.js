@@ -33,7 +33,7 @@ const StepUI = (props) => {
 
                         sx={{ my: 2, color: '#2d3436', display: 'block' }}
                     >
-                        repitition: <strong>{props.step.repitition}</strong>
+                        repitition: <strong>{props.step.repetition}</strong>
                     </Button>
                     <Button
                         sx={{ ml: 'auto' }}

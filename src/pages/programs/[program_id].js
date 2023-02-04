@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 
 import { Button, Card, Divider, Grid, InputLabel, Stack, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { styled } from '@mui/material/styles';
 
@@ -18,6 +18,7 @@ import { createSession } from 'src/handlers/fetchers/ProgramGroupFetchers';
 
 
 import useSWRMutation from 'swr/mutation'
+import FullScreenDialog from 'src/views/sessions/SessionCard';
 
 
 
@@ -59,9 +60,13 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const program_id = context.params.program_id;
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sessions/groups/${program_id}`)
+    const body = await res.json();
 
     return {
         props: {
+            sessions_sp: body,
             session: session
         }
     }
@@ -81,6 +86,10 @@ const SessionsPage = (props) => {
 
 
     const [newSession, setNewSession] = useState(null);
+
+    useEffect(() => {
+        console.log(props.sessions_sp)
+    })
 
     const handleOpenStepCreation = () => {
         setOpenStepCreation(true)
@@ -141,6 +150,7 @@ const SessionsPage = (props) => {
 
         try {
             trigger(sessionObject)
+            router.push("/programs")
         } catch (err) {
             console.log(err)
         }
@@ -156,10 +166,26 @@ const SessionsPage = (props) => {
         isMutating
     } = useSWRMutation('/sessions/create', createSession)
 
+
+
+    // dialog sessions 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <>
             <div>
-                Program : {program_id} , see all sessions (link)
+                Program : {program_id} , see all sessions 
+                <Button variant="outlined" onClick={handleClickOpen}>
+                    Open to see sessions 
+                </Button>
             </div>
             <Grid container spacing={2} mt={5}>
                 <Grid item xs={9}>
@@ -243,6 +269,14 @@ const SessionsPage = (props) => {
                         />
                     </Item>
                 </Grid>
+
+                <FullScreenDialog
+                    sessions={props.sessions_sp}
+                    open={open}
+                    handleClickOpen={handleClickOpen}
+                    handleClose={handleClose}
+                />
+
             </Grid>
         </>
     )
