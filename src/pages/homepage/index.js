@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -10,56 +10,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Stack } from '@mui/material';
+import { Stack, TextField } from '@mui/material';
 import { getSession } from 'next-auth/react';
+import { ContentSavePlus, Label } from 'mdi-material-ui';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material';
+import { FormControl } from '@mui/material';
 
-
-
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context)
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/pages/login',
-        permanent: false
-      }
-    }
-  }
-  else if (!session.user.roles.some(e => e.name === 'COACH')) {
-    return {
-      redirect: {
-        destination: '/pages/accueil',
-        permanent: false
-      }
-    }
-  }
-
-  return {
-    props: {
-      session: session
-    }
-  }
-}
-
-
-
-// const useStyles = makeStyles({
-//   root: {
-//     minWidth: 275,
-//   },
-//   bullet: {
-//     display: 'inline-block',
-//     margin: '0 2px',
-//     transform: 'scale(0.8)',
-//   },
-//   title: {
-//     fontSize: 14,
-//   },
-//   pos: {
-//     marginBottom: 12,
-//   },
-// });
 
 const ProgramCard = ({ program }) => {
   const [isJoined, setIsJoined] = useState(false);
@@ -88,19 +46,22 @@ const ProgramCard = ({ program }) => {
   return (
     <Card >
       <CardContent>
-        <Avatar src={program.coach.photo} alt={program.coach.name} width={60} height={60} />
+        {/* <Avatar src={program.coach.photo} alt={program.coach.name} width={60} height={60} /> */}
         <Typography color="textSecondary" gutterBottom>
-          Coach: {program.coach.name}
+          Coach: {program.creatorName}
         </Typography>
         <Typography variant="h5" component="h2">
           {program.name}
         </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          Category : {program.category}
+        </Typography>
         <Typography
           color="textSecondary">
-          {program.description}
+          {program.bio}
         </Typography>
         <Typography variant="body2" component="p">
-          Nombre d'athlètes: {program.athleteCount}
+          Nombre d'athlètes: {program.numAthletes}
         </Typography>
       </CardContent>
       <CardActions>
@@ -124,7 +85,7 @@ const ProgramCard = ({ program }) => {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Voulez-vous vraiment envoyer une demande de participation au programme "{program.name}" au
-            coach {program.coach.name}?
+            coach {program.creatorName}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -145,7 +106,7 @@ const ProgramCard = ({ program }) => {
         <DialogTitle id="alert-dialog-title">{"Demande de participation envoyée"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Votre demande de participation au programme "{program.name}" a été envoyée au coach {program.coach.name}.
+            Votre demande de participation au programme "{program.name}" a été envoyée au coach {program.creatorName}.
             Vous recevrez une réponse dans les prochains jours.
           </DialogContentText>
         </DialogContent>
@@ -159,48 +120,170 @@ const ProgramCard = ({ program }) => {
   );
 };
 
-const ProgramList = () => {
+// const DropboxFilter = ({ filterItem, menuItems, label }) => {
+//   const [selectedValue, setSelectedValue] = useState('all');
+//   const handleCategorieChange = (event) => {
+//     setSelectedValue(event.target.value)
+//     filterItem(event.target.value)
+//   }
+//   return (
+//     <div>
+//       <Select
+//           id='categorie-select'
+//           value={selectedValue}
+//           label="categorie"
+//           onChange={handleCategorieChange}
+//       >
+//         {menuItems.map(option => (
+//             <MenuItem value={option}>{option}</MenuItem>
+//           ))}
+//       </Select>
+//     </div>
+//   );
+// };
 
-  const programs = [
-    {
-      "id": 1,
-      "coach": { "name": "Jane Doe", "photo": "https://www.google.com/images/jane-doe.jpg" },
-      "name": "Programme de musculation avancé",
-      "description": "Ce programme de musculation est conçu pour ceux qui cherchent à atteindre des niveaux de performance supérieurs. Il comprend des exercices de musculation avancés et un plan de nutrition adapté.",
-      "athleteCount": 35
-    },
-    {
-      "id": 2,
-      "coach": { "name": "Jane Doe", "photo": "https://www.google.com/images/jane-doe.jpg" },
-      "name": "Programme de course à pied pour débutants",
-      "description": "Ce programme de course à pied est destiné aux débutants et vise à améliorer la forme physique et la condition physique. Il comprend des entraînements en endurance et en vitesse, ainsi qu'un plan de nutrition équilibré.",
-      "athleteCount": 15
-    },
-    {
-      "id": 3,
-      "coach": { "name": "Jane Doe", "photo": "https://www.google.com/images/jane-doe.jpg" },
-      "name": "Programme de yoga pour la relaxation",
-      "description": "Ce programme de yoga vous aidera à vous détendre et à vous relaxer grâce à une série de poses de yoga et de techniques de respiration. Il inclut également des conseils de nutrition pour soutenir votre pratique de yoga.",
-      "athleteCount": 10
-    },
-    {
-      "id": 4,
-      "coach": { "name": "John Smith", "photo": "https://www.google.com/images/john-smith.jpg" },
-      "name": "Programme de musculation pour débutants",
-      "description": "Ce programme de musculation est idéal pour les débutants qui souhaitent développer leur force et leur endurance musculaire. Il comprend des exercices de base de musculation et un plan de nutrition adapté aux besoins des débutants.",
-      "athleteCount": 20
-    },
-    {
-      "id": 5,
-      "coach": { "name": "John Smith", "photo": "https://www.google.com/images/john-smith.jpg" },
-      "name": "Programme de fitness en circuit",
-      "description": "Ce programme de fitness en circuit vous permettra de travailler tout votre corps grâce à une série d'exercices de haute intensité. Il comprend également un plan de nutrition pour vous aider à atteindre vos objectifs de forme physique.",
-      "athleteCount": 25
-    }]
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/pages/login',
+        permanent: false
+      }
+    }
+  }
+  
+  return {
+    props: {
+      programs: body,
+      session: session
+    }
+  }
+}
+
+
+
+
+const ProgramList = () => {
+  const [programs, setPrograms] = useState(null)
+  const [isLoading, setLoading] = useState(false)
+  const [dataFiltredByCat, setDataFiltredByCat] = useState(programs)
+  const [data, setData] = useState(programs)
+  const [menuItems, setMenuItems] = useState(['all']);
+  const [{ min, max }, setRangeValues] = useState({ min: -1, max: Infinity })
+  const [selectedValue, setSelectedValue] = useState('all');
+
+
+  // const filterItem = (curcat) => {
+  //   if(curcat === 'all') {
+  //     setData(programs)
+  //     setDataFiltredByCat(programs)
+  //   }
+  //   else {
+  //     const filtredData = programs.filter((newVal) => {
+  //       return newVal.category.name === curcat;
+  //     });
+  //     setData(filtredData)
+  //     setDataFiltredByCat(filtredData)
+  //   }
+
+  // };
+  // const filterItemMinMax = (min,max) => {
+  //   const filtredData = data.filter((newVal) => {
+  //     return (newVal.numAthletes >= min) && (newVal.numAthletes <= max);
+  //   });
+  //   setDataFiltredByCat(filtredData);
+  // };
+
+  const filterAll = (category, min, max) => {
+    if (category === 'all') {
+      const filtredData = programs.filter((newVal) => {
+        return (newVal.numAthletes >= min) && (newVal.numAthletes <= max)
+      });
+      setData(filtredData)
+    }
+    else {
+      const filtredData = programs.filter((newVal) => {
+        return (newVal.category.name === category) && (newVal.numAthletes >= min) && (newVal.numAthletes <= max)
+      });
+      setData(filtredData)
+    }
+  }
+
+  const handleCategorieChange = (event) => {
+    setSelectedValue(event.target.value)
+    filterAll(event.target.value, min, max)
+  }
+
+  const handleMinChange = (event) => {
+    var newMin
+    if (event.target.value === '') {
+      newMin = -1
+    }
+    else {
+      newMin = parseInt(event.target.value)
+    }
+    setRangeValues({ min: newMin, max: max })
+    filterAll(selectedValue, newMin, max)
+  }
+
+  const handleMaxChange = (event) => {
+    var newMax
+    if (event.target.value === '') {
+      newMax = Infinity
+    }
+    else {
+      newMax = parseInt(event.target.value)
+    }
+    setRangeValues({ min: min, max: newMax })
+    filterAll(selectedValue, min, newMax)
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/`)
+      .then(res => res.json())
+      .then(data => {
+        data.map(
+          element => {
+            element.numAthletes = Math.floor(Math.random() * 300)
+          }
+        )
+        setPrograms(data)
+        setData(data)
+        setLoading(false)
+        setMenuItems(['all', ...new Set(data.map((Val) => Val.category.name))])
+      })
+  }, [])
+
+
+  if (isLoading) return <p>Loading...</p>
+
+
+  if (!data) return <p>No profile data</p>
+
 
   return (
     <Stack direction='column' spacing={2}>
-      {programs.map((program) => (
+      <FormControl>
+        <Stack direction="row" spacing={2}>
+          {/* <InputLabel id="categorie-select-label">Categorie</InputLabel> */}
+          <Select
+            id='categorie-select'
+            value={selectedValue}
+            labelId="categorie-select-label"
+            label="categorie"
+            onChange={handleCategorieChange}
+          >
+            {menuItems.map((option, index) => (
+              <MenuItem key={index} value={option}>{option}</MenuItem>
+            ))}
+          </Select>
+          <TextField id='min-number' label="Min" type="Number" onChange={handleMinChange} />
+          <TextField id='max-number' label="Max" type="Number" onChange={handleMaxChange} />
+        </Stack>
+      </FormControl>
+      {data.map((program) => (
         <ProgramCard key={program.id} program={program} />
       ))}
     </Stack>
