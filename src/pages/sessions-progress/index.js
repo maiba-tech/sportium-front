@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
       }
     }
   }
-  
+
 return {
     props: {
       session: session
@@ -28,22 +28,16 @@ return {
   }
 
   // get the athlete profile by ID
-
-
 }
 
 
 const SessionsProgress=(props)=>{
-  const [todoList,setTodoList]=useState([]);
-  const [doingList,setDoingList]=useState([]);
-  const [doneList,setDoneList]=useState([]);
   const [allSessions,setAllSessions]=useState([{name:"TO DO",items:[]},{name:"IN PROGRESS",items:[]},{name:"DONE",items:[]}]);
   const [ready, setReady] = useState(true);
   const [boardData, setBoardData] = useState(BoardData);
   const [isLoading,setLoading]=useState(true);
-  const [sessionsData,setSessionsData]=useState(SessionsData);
+  const [itemsToUpdate,setItemsToUpdate]=useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [selectedBoard, setSelectedBoard] = useState(0);
   useEffect(async () => {
     await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${props.session.user.id}/currentSessions`).
     then(data=>{
@@ -70,6 +64,7 @@ const SessionsProgress=(props)=>{
     let newBoardData = allSessions;
     let dragItem = newBoardData[parseInt(re.source.droppableId)].items[re.source.index];
     console.log(dragItem);
+    itemsToUpdate.push(dragItem);
     newBoardData[parseInt(re.source.droppableId)].items.splice(
       re.source.index,
       1
@@ -124,6 +119,17 @@ const SessionsProgress=(props)=>{
     }
   }
 
+  const updateStates=()=>{
+    axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/currentSessionState/updateStates`,itemsToUpdate)
+      .then(response=> {
+        console.log(response)
+      })
+      .catch(err=>{
+        console.log(err)
+      });
+    setItemsToUpdate([]);
+  }
+
   if(isLoading) return <p>Is Loading...</p>
 
   return(
@@ -140,26 +146,25 @@ const SessionsProgress=(props)=>{
             </div>*/}
             {ready && (
               <DragDropContext onDragEnd={onDragEnd}>
-                <div>
+                <div className='row my-2'>
                   {allSessions.map((board, bIndex) => {
                     return (
-                      <div key={board.name}>
+                      <div key={board.name} className='col-md-4'>
                         <Droppable droppableId={bIndex.toString()}>
                           {(provided, snapshot) => (
                             <div
                               {...provided.droppableProps}
                               ref={provided.innerRef}
                             >
-                              <div
-                                className={` bg-success m-5
-                            ${snapshot.isDraggingOver} w-25`}
+                              <div style={{background:'#9849DD'}}
+                                className={`card
+                            ${snapshot.isDraggingOver} `}
                               >
-                                <h4 className=" p-3 flex justify-between items-center mb-2">
-                                  <span className="text-2xl text-gray-600">
-                                    {board.name}
+                                <div className='card-header'>
+                                  <span className="text-2xl text-white">
+                                    <b>{board.name}</b>
                                   </span>
-                                </h4>
-
+                                </div>
                                 <div style={{ maxHeight: 'calc(100vh - 290px)' }}>
                                   {board.items.length > 0 &&
                                     board.items.map((item, iIndex) => {
@@ -168,7 +173,7 @@ const SessionsProgress=(props)=>{
                                           key={item.id}
                                           data={item}
                                           index={iIndex}
-                                          className="m-3"
+                                          className="my-3"
                                         />
                                       );
                                     })}
@@ -181,10 +186,13 @@ const SessionsProgress=(props)=>{
                       </div>
                     );
                   })}
-                </div>
+                  </div>
               </DragDropContext>
             )}
-            <button className='btn btn-primary'>save</button>
+            <button className='btn btn-primary' onClick={e=>{
+              e.preventDefault();
+              updateStates();
+            }}>save</button>
           </div>
         </div>
       </div>
