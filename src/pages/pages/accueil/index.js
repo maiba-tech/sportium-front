@@ -6,9 +6,33 @@ import Details from "../../../views/acceuil/Components/Details";
 import GetStarted from "../../../views/acceuil/Components/GetStarted";
 import Footer from "../../../views/acceuil/Components/Footer";
 import BlankLayout from 'src/@core/layouts/BlankLayout';
+import { getSession } from "next-auth/react";
 
 
-function App() {
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  if (session) {
+      return {
+          redirect: {
+              destination: '/account-settings',
+              permanent: false
+          }
+      }
+  }
+  
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/`)
+  // const body = await res.json();
+
+
+  return {
+      props: {
+          message: "Hello"
+      }
+  }
+}
+
+function App(props) {
   return (
     <>
       <Hero />
