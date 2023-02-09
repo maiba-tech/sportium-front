@@ -48,19 +48,14 @@ const TabName = styled('span')(({ theme }) => ({
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/pages/login',
-        permanent: false
-      }
-    }
-  }
 
   // get the athlete profile by ID
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/athletes/${session.user.id}`)
   const body = await res.json()
+  console.log(body);
   if (res.status === 200) {
+    console.log(body)
+
     return {
       props: {
         data: body,
