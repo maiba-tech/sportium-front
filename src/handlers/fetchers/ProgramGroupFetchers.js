@@ -27,3 +27,14 @@ export const createSession = async (route, { arg }) => {
         body: JSON.stringify(arg)
     })
 }
+
+
+export const createParticipation = async (route, { arg }) => {
+    return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${route}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }, 
+        method: 'POST', 
+        body: JSON.stringify(arg)
+    })
+}

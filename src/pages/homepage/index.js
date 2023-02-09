@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Stack, TextField } from '@mui/material';
+import { Backdrop, Stack, TextField } from '@mui/material';
 import { getSession } from 'next-auth/react';
 import { ContentSavePlus, Label } from 'mdi-material-ui';
 import Select from '@mui/material/Select';
@@ -19,17 +19,36 @@ import InputLabel from '@mui/material';
 import { FormControl } from '@mui/material';
 
 
-const ProgramCard = ({ program }) => {
+import useSWRMutation from 'swr/mutation'
+import { createParticipation } from 'src/handlers/fetchers/ProgramGroupFetchers';
+
+
+const ProgramCard = ({ program, userId }) => {
   const [isJoined, setIsJoined] = useState(false);
   const [openRequest, setOpenRequest] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
+
+  const {
+    trigger,
+    isMutating
+  } = useSWRMutation('/groups/athlete/add', createParticipation)
 
   const handleJoin = () => {
     setOpenRequest(true);
   };
 
-  const handleSendRequest = () => {
+  const handleSendRequest = async () => {
     // Envoyer la demande de participation ici
+    
+    try {
+      trigger({
+        group: program.id,
+        athlete: userId
+      })
+    } catch (err) {
+      console.log({ ParticipationErr: err })
+    }
+
     setIsJoined(true);
     setOpenRequest(false);
     setOpenConfirmation(true);
@@ -66,8 +85,8 @@ const ProgramCard = ({ program }) => {
       </CardContent>
       <CardActions>
         {isJoined ? (
-          <Button size="small" color='secondary' disabled>
-            Request sent
+          <Button size="small" color='success' disabled>
+            Check your progress for sessions
           </Button>
         ) : (
           <Button size="small" color='primary' onClick={handleJoin}>
@@ -116,6 +135,12 @@ const ProgramCard = ({ program }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isMutating}
+
+        // onClick={handleClose}
+      ></Backdrop>
     </Card>
   );
 };
@@ -152,10 +177,9 @@ export async function getServerSideProps(context) {
       }
     }
   }
-  
+
   return {
     props: {
-      programs: body,
       session: session
     }
   }
@@ -164,7 +188,7 @@ export async function getServerSideProps(context) {
 
 
 
-const ProgramList = () => {
+const ProgramList = (props) => {
   const [programs, setPrograms] = useState(null)
   const [isLoading, setLoading] = useState(false)
   const [dataFiltredByCat, setDataFiltredByCat] = useState(programs)
@@ -204,7 +228,7 @@ const ProgramList = () => {
     }
     else {
       const filtredData = programs.filter((newVal) => {
-        return (newVal.category.name === category) && (newVal.numAthletes >= min) && (newVal.numAthletes <= max)
+        return (newVal.category === category) && (newVal.numAthletes >= min) && (newVal.numAthletes <= max)
       });
       setData(filtredData)
     }
@@ -241,7 +265,7 @@ const ProgramList = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/athlete/${props.session.user?.id}/none-joined`)
       .then(res => res.json())
       .then(data => {
         data.map(
@@ -252,7 +276,7 @@ const ProgramList = () => {
         setPrograms(data)
         setData(data)
         setLoading(false)
-        setMenuItems(['all', ...new Set(data.map((Val) => Val.category.name))])
+        setMenuItems(['all', ...new Set(data.map((Val) => Val.category))])
       })
   }, [])
 
@@ -284,7 +308,7 @@ const ProgramList = () => {
         </Stack>
       </FormControl>
       {data.map((program) => (
-        <ProgramCard key={program.id} program={program} />
+        <ProgramCard key={program.id} program={program} userId={props.session.user?.id} />
       ))}
     </Stack>
   );

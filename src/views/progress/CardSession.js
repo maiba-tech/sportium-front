@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/dist/client/image";
 import { Draggable } from "react-beautiful-dnd";
+import { Divider, Typography } from "@mui/material";
 
 const CardSession=({ data, index })=> {
   return (
@@ -22,8 +23,13 @@ const CardSession=({ data, index })=> {
                 {
                   data.session.listSteps.map((step,sIndex)=>{
                     return (
-                      <li>
-                        {step.description}
+                      <li key={sIndex}>
+                        <Typography sx={{color: step.color}}>
+                          <strong>
+                            {step.type}
+                          </strong>
+                        </Typography> in <strong>{step.duration}</strong> for <strong>{step.repetition === 0? 1: step.repetition}</strong> times
+                        <Divider />
                       </li>
                     );
                   })
