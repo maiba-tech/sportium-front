@@ -24,16 +24,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-    else if (!session.user.roles.some(e => e.name === 'ADMIN')) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
-        }
-    }
+    // else if (!session.user.roles.some(e => e.name === 'ADMIN')) {
+    //     return {
+    //         redirect: {
+    //             destination: '/',
+    //             permanent: false
+    //         }
+    //     }
+    // }
 
-    // fetch all pending demands 
+    // fetch all pending demands
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/Admin/pending`)
     const body = await res.json()
     if (res.status === 200) {

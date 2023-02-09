@@ -57,6 +57,11 @@ const navigation = (session) => {
             path: '/'
           },
           {
+            title: 'GroupsDashboard',
+            icon: GoogleCirclesExtended,
+            path: '/coach-dashboard'
+          },
+          {
             title: 'Account Settings',
             icon: AccountCogOutline,
             path: '/account-settings'

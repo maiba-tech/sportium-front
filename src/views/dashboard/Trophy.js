@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
+import {getSession} from "next-auth/react";
 
 // Styled component for the triangle shaped background image
 const TriangleImg = styled('img')({
@@ -21,7 +22,9 @@ const TrophyImg = styled('img')({
   position: 'absolute'
 })
 
-const Trophy = () => {
+
+
+const Trophy = (props) => {
   // ** Hook
   const theme = useTheme()
   const imageSrc = theme.palette.mode === 'light' ? 'triangle-light.png' : 'triangle-dark.png'
@@ -29,15 +32,15 @@ const Trophy = () => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
-        <Typography variant='h6'>Congratulations John! 🥳</Typography>
+        <Typography variant='h6'>Congratulations {props.name}! 🥳</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-          Best seller of the month
+          Best Groups
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          $42.8k
+          You have created {props.group} groups
         </Typography>
-        <Button size='small' variant='contained'>
-          View Sales
+        <Button size='small' variant='contained' >
+          You are always in progress with your athletes keep going
         </Button>
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />
